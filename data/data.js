@@ -1,4 +1,4 @@
-ㄹconst DASHBOARD_DATA = {
+const DASHBOARD_DATA = {
 
   population: {
     years:      [2000, 2005, 2010, 2015, 2020, 2021, 2022, 2023, 2024, 2025],
