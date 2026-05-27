@@ -55,14 +55,18 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
   const py = dataObj[parseInt(prevYear)];
   const labs = [], cur = [], prev = [], diff = [];
   cy.forEach((v, i) => {
-    if (v !== null) { labs.push(MONTHS[i]); cur.push(v); prev.push(py[i]); diff.push(v - py[i]); }
+    labs.push(MONTHS[i]);
+    cur.push(v);
+    prev.push(py[i]);
+    diff.push(v !== null && py[i] !== null ? v - py[i] : null);
   });
+  const pos = diff.filter(d => d !== null && d > 0).length;
   setLegend(lgId, [
     { color: c1, label: curYear + '년' },
     { color: c2, label: prevYear + '년(전년)' },
     { color: '#888780', label: '증감(명)', dash: true }
   ]);
-  const pos = diff.filter(d => d > 0).length;
+  
   document.getElementById(noteId).innerHTML =
     `${curYear}년 ${labs.length}개월 중 <strong>${pos}개월</strong> 전년동월 대비 증가.`;
   mkChart(canvasId, {
