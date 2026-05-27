@@ -1,4 +1,4 @@
-const DASHBOARD_DATA = {
+ㄹconst DASHBOARD_DATA = {
 
   population: {
     years:      [2000, 2005, 2010, 2015, 2020, 2021, 2022, 2023, 2024, 2025],
@@ -116,9 +116,9 @@ const DASHBOARD_DATA = {
     s1: [
       { label: '총 등록인구 (\'25)', value: '957.9만', trend: 'down', note: '↓ 전년 대비 –1.8만명' },
       { label: '주민등록인구 (\'25)', value: '929.9만', trend: 'down', note: '↓ 지속 감소 추세' },
-      { label: '고령인구 비중 (\'24)', value: '19.2%', trend: 'down', note: '↑ 2015년 12.3% → 상승' },
-      { label: '유소년 비중 (\'24)', value: '8.6%', trend: 'down', note: '↓ 2000년 18.4% → 감소' },
-      { label: '생산연령 비중 (\'24)', value: '72.2%', trend: 'down', note: '↓ 2015년 75.9% → 하락' },
+   { label: '고령인구 비중 (\'24)', value: '19.2%', sub: '약 179만 명', trend: 'down', note: '↑ 2015년 12.3% → 상승' },
+{ label: '유소년 비중 (\'24)', value: '8.6%', sub: '약 80만 명', trend: 'down', note: '↓ 2000년 18.4% → 감소' },
+{ label: '생산연령 비중 (\'24)', value: '72.2%', sub: '약 674만 명', trend: 'down', note: '↓ 2015년 75.9% → 하락' },
     ],
     s2: [
       { label: '합계출산율 (\'25)', value: '0.63', trend: 'up', note: '↑ 2024년 0.58 반등' },
