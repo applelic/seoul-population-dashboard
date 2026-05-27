@@ -28,7 +28,7 @@ function buildKPI(id, items) {
   document.getElementById(id).innerHTML = items.map(k => `
     <div class="kpi-card">
       <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value">${k.value}${k.sub ? `<span class="kpi-sub"> · ${k.sub}</span>` : ''}</div>
+<div class="kpi-value">${k.value}${k.sub ? '<span class="kpi-sub"> · ' + k.sub + '</span>' : ''}</div>
       <div class="kpi-note ${k.trend}">${k.note}</div>
     </div>
   `).join('');
