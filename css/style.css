@@ -88,6 +88,12 @@ body {
   font-size: 11px;
   margin-top: 2px;
 }
+.kpi-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: #888;
+}
+.kpi-note.up   { color: #1D9E75; }
 .kpi-note.up   { color: #1D9E75; }
 .kpi-note.down { color: #D85A30; }
 .kpi-note.neutral { color: #888; }
