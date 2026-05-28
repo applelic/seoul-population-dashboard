@@ -410,3 +410,94 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 window.addEventListener('DOMContentLoaded', () => initS1());
+// ─── 자치구별 인구 현황 차트 ───────────────────
+function renderDistrictChart() {
+  const d = DATA.districtPopulation;
+
+  // 정렬 기준 가져오기 (기본: 등록인구)
+  const sortKey = document.getElementById('districtSort')?.value || 'registered';
+  const indices = d.districts.map((_, i) => i)
+    .sort((a, b) => d[sortKey][b] - d[sortKey][a]);
+
+  const labels     = indices.map(i => d.districts[i]);
+  const registered = indices.map(i => d.registered[i]);
+  const residents  = indices.map(i => d.residents[i]);
+  const foreigners = indices.map(i => d.foreigners[i]);
+
+  const ctx = getOrCreate('districtPopChart');
+  if (window._districtChart) window._districtChart.destroy();
+  window._districtChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: '주민등록인구', data: residents,  backgroundColor: 'rgba(37,99,235,0.75)',  order: 2 },
+        { label: '등록외국인',   data: foreigners, backgroundColor: 'rgba(239,68,68,0.75)',   order: 1 },
+        { label: '등록인구(합계)', data: registered, type: 'line',
+          borderColor: '#f59e0b', backgroundColor: 'transparent',
+          pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, order: 0 },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명`,
+          },
+        },
+      },
+      scales: {
+        x: { stacked: true, ticks: { font: { size: 11 } } },
+        y: { stacked: true,
+          ticks: { callback: v => (v/10000).toFixed(0)+'만' },
+          title: { display: true, text: '인구 (명)' },
+        },
+      },
+    },
+  });
+}
+
+// 외국인 비율 도넛 (Top10)
+function renderForeignRatioChart() {
+  const d = DATA.districtPopulation;
+  const ratios = d.districts.map((name, i) => ({
+    name, ratio: (d.foreigners[i] / d.registered[i] * 100).toFixed(1),
+    count: d.foreigners[i],
+  })).sort((a, b) => b.ratio - a.ratio).slice(0, 10);
+
+  const ctx = getOrCreate('foreignRatioChart');
+  if (window._foreignChart) window._foreignChart.destroy();
+  window._foreignChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ratios.map(r => r.name),
+      datasets: [{
+        label: '외국인 비율 (%)',
+        data: ratios.map(r => r.ratio),
+        backgroundColor: [
+          '#ef4444','#f97316','#f59e0b','#eab308','#84cc16',
+          '#22c55e','#14b8a6','#3b82f6','#8b5cf6','#ec4899'
+        ],
+      }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `외국인 비율: ${ctx.parsed.x}% (${ratios[ctx.dataIndex].count.toLocaleString()}명)`,
+          },
+        },
+      },
+      scales: {
+        x: { title: { display: true, text: '외국인 비율 (%)' } },
+      },
+    },
+  });
+}
