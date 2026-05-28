@@ -19,8 +19,10 @@ function mkChart(id, cfg) {
 }
 
 function setLegend(id, items) {
-  document.getElementById(id).innerHTML = items.map(i =>
-    `<span><span class="legend-dot" style="background:${i.color};${i.dash?'border:1px dashed #999':''}"></span>${i.label}</span>`
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = items.map(i =>
+    `<span><span class="legend-dot" style="background:${i.color};${i.dash ? 'border:1px dashed #999' : ''}"></span>${i.label}</span>`
   ).join('');
 }
 
@@ -28,7 +30,7 @@ function buildKPI(id, items) {
   document.getElementById(id).innerHTML = items.map(k => `
     <div class="kpi-card">
       <div class="kpi-label">${k.label}</div>
-<div class="kpi-value">${k.value}${k.sub ? '<span class="kpi-sub"> · ' + k.sub + '</span>' : ''}</div>
+      <div class="kpi-value">${k.value}${k.sub ? '<span class="kpi-sub"> · ' + k.sub + '</span>' : ''}</div>
       <div class="kpi-note ${k.trend}">${k.note}</div>
     </div>
   `).join('');
@@ -66,7 +68,6 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
     { color: c2, label: prevYear + '년(전년)' },
     { color: '#888780', label: '증감(명)', dash: true }
   ]);
-  
   document.getElementById(noteId).innerHTML =
     `${curYear}년 ${labs.length}개월 중 <strong>${pos}개월</strong> 전년동월 대비 증가.`;
   mkChart(canvasId, {
@@ -146,6 +147,9 @@ function drawHH() {
   }
 }
 
+// ══════════════════════════════════════════════
+// S1: 인구 규모·구조
+// ══════════════════════════════════════════════
 function initS1() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s1', d.kpi.s1);
@@ -188,10 +192,12 @@ function initS1() {
   });
   renderDistrictChart();
   renderForeignRatioChart();
-  document.getElementById('districtSort')
-    .addEventListener('change', renderDistrictChart);
+  document.getElementById('districtSort').addEventListener('change', renderDistrictChart);
 }
 
+// ══════════════════════════════════════════════
+// S2: 출생·혼인 동향
+// ══════════════════════════════════════════════
 function initS2() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s2', d.kpi.s2);
@@ -240,6 +246,9 @@ function initS2() {
   });
 }
 
+// ══════════════════════════════════════════════
+// S3: 가구 구조
+// ══════════════════════════════════════════════
 function initS3() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s3', d.kpi.s3);
@@ -280,6 +289,9 @@ function initS3() {
   });
 }
 
+// ══════════════════════════════════════════════
+// S4: 인구이동 (국적별 차트 제거 → S5로 이동)
+// ══════════════════════════════════════════════
 function initS4() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s4', d.kpi.s4);
@@ -299,24 +311,6 @@ function initS4() {
     },
     options: { ...baseOpts, indexAxis: 'y', scales: { x: { ...baseOpts.scales.x, ticks: { color: tc, font: { size: 10 }, callback: v => v.toLocaleString() } }, y: baseOpts.scales.y } }
   });
-  setLegend('lg-for', [{ color: '#185FA5', label: '중국' }, { color: '#D85A30', label: '베트남', dash: true }, { color: '#1D9E75', label: '미국', dash: true }, { color: '#888780', label: '그 외', dash: true }]);
-  mkChart('c_for', {
-    type: 'line',
-    data: {
-      labels: d.foreignNationality.years,
-      datasets: [
-        { data: d.foreignNationality.china, borderColor: '#185FA5', tension: 0.3, pointRadius: 3 },
-        { data: d.foreignNationality.vietnam, borderColor: '#D85A30', tension: 0.3, pointRadius: 3, borderDash: [4, 3] },
-        { data: d.foreignNationality.usa, borderColor: '#1D9E75', tension: 0.3, pointRadius: 3, borderDash: [2, 4] },
-        { data: d.foreignNationality.others, borderColor: '#888780', tension: 0.3, pointRadius: 3, borderDash: [6, 2] },
-      ]
-    },
-    options: {
-      ...baseOpts,
-      scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } } },
-      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } } }
-    }
-  });
   mkChart('c_reason', {
     type: 'bar',
     data: {
@@ -327,9 +321,105 @@ function initS4() {
   });
 }
 
+// ══════════════════════════════════════════════
+// S5: 외국인 (신규)
+// ══════════════════════════════════════════════
 function initS5() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s5', d.kpi.s5);
+
+  // ── 차트1: 외국인 주민 유형별 추이 (누적 막대) ──
+  mkChart('c_for_type', {
+    type: 'bar',
+    data: {
+      labels: d.foreignResidentType.years.map(String),
+      datasets: [
+        { label: '외국인근로자', data: d.foreignResidentType.worker,      backgroundColor: '#4F81BD', stack: 'a' },
+        { label: '외국국적동포', data: d.foreignResidentType.ethnic,      backgroundColor: '#8064A2', stack: 'a' },
+        { label: '기타외국인',   data: d.foreignResidentType.other,       backgroundColor: '#F79646', stack: 'a' },
+        { label: '유학생',       data: d.foreignResidentType.student,     backgroundColor: '#9BBB59', stack: 'a' },
+        { label: '결혼이민자',   data: d.foreignResidentType.marriage,    backgroundColor: '#C0504D', stack: 'a' },
+        { label: '한국국적취득', data: d.foreignResidentType.naturalized, backgroundColor: '#4BACC6', stack: 'a' },
+        { label: '자녀(출생)',   data: d.foreignResidentType.child,       backgroundColor: '#D9D9D9', stack: 'a' },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index' },
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명`,
+            footer: items => `합계: ${items.reduce((s, i) => s + (i.raw || 0), 0).toLocaleString()}명`
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { color: gc }, ticks: { color: tc, font: { size: 11 } } },
+        y: { stacked: true, grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '명' } }
+      }
+    }
+  });
+
+  // ── 차트2: 등록외국인 체류자격별 추이 (꺾은선) ──
+  mkChart('c_for_visa', {
+    type: 'line',
+    data: {
+      labels: d.foreignVisaType.years.map(String),
+      datasets: [
+        { label: '유학(D-2)',     data: d.foreignVisaType.D2, borderColor: '#9BBB59', backgroundColor: '#9BBB5922', borderWidth: 3, pointRadius: 4, tension: 0.3 },
+        { label: '방문취업(H-2)', data: d.foreignVisaType.H2, borderColor: '#C0504D', backgroundColor: '#C0504D22', borderWidth: 3, pointRadius: 4, tension: 0.3 },
+        { label: '영주(F-5)',     data: d.foreignVisaType.F5, borderColor: '#4F81BD', backgroundColor: '#4F81BD22', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+        { label: '결혼이민(F-6)', data: d.foreignVisaType.F6, borderColor: '#8064A2', backgroundColor: '#8064A222', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+        { label: '방문동거(F-1)', data: d.foreignVisaType.F1, borderColor: '#F79646', backgroundColor: '#F7964622', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+        { label: '일반연수(D-4)', data: d.foreignVisaType.D4, borderColor: '#4BACC6', backgroundColor: '#4BACC622', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+        { label: '거주(F-2)',     data: d.foreignVisaType.F2, borderColor: '#948A54', backgroundColor: '#948A5422', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index' },
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명` } }
+      },
+      scales: {
+        x: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 } } },
+        y: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '명' } }
+      }
+    }
+  });
+
+  // ── 차트3: 국적별 비중 (기존 s4에서 이동) ──
+  setLegend('lg-for', [{ color: '#185FA5', label: '중국' }, { color: '#D85A30', label: '베트남', dash: true }, { color: '#1D9E75', label: '미국', dash: true }, { color: '#888780', label: '그 외', dash: true }]);
+  mkChart('c_for', {
+    type: 'line',
+    data: {
+      labels: d.foreignNationality.years,
+      datasets: [
+        { data: d.foreignNationality.china,   borderColor: '#185FA5', tension: 0.3, pointRadius: 3 },
+        { data: d.foreignNationality.vietnam, borderColor: '#D85A30', tension: 0.3, pointRadius: 3, borderDash: [4, 3] },
+        { data: d.foreignNationality.usa,     borderColor: '#1D9E75', tension: 0.3, pointRadius: 3, borderDash: [2, 4] },
+        { data: d.foreignNationality.others,  borderColor: '#888780', tension: 0.3, pointRadius: 3, borderDash: [6, 2] },
+      ]
+    },
+    options: {
+      ...baseOpts,
+      scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } } },
+      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } } }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════
+// S6: 장래 추계 (기존 S5)
+// ══════════════════════════════════════════════
+function initS6() {
+  const d = DASHBOARD_DATA;
+  buildKPI('kpi-s6', d.kpi.s6);
   setLegend('lg-proj', [{ color: '#185FA5', label: '총인구(만명)' }, { color: '#D85A30', label: '고령비중(%)', dash: true }, { color: '#1D9E75', label: '1인가구비중(%)', dash: true }]);
   mkChart('c_proj', {
     type: 'line',
@@ -338,14 +428,14 @@ function initS5() {
       datasets: [
         { type: 'bar', data: d.projection.total, backgroundColor: 'rgba(24,95,165,0.2)', yAxisID: 'y', order: 2 },
         { data: d.projection.elderly, borderColor: '#D85A30', tension: 0.3, pointRadius: 4, yAxisID: 'y1', borderDash: [4, 3], order: 1 },
-        { data: d.projection.single, borderColor: '#1D9E75', tension: 0.3, pointRadius: 4, yAxisID: 'y1', borderDash: [2, 4], order: 1 }
+        { data: d.projection.single,  borderColor: '#1D9E75', tension: 0.3, pointRadius: 4, yAxisID: 'y1', borderDash: [2, 4], order: 1 }
       ]
     },
     options: {
       ...baseOpts,
       scales: {
         x: baseOpts.scales.x,
-        y: { position: 'left', grid: { color: gc }, min: 700, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } },
+        y:  { position: 'left',  grid: { color: gc }, min: 700, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } },
         y1: { position: 'right', min: 0, max: 60, grid: { display: false }, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } }
       }
     }
@@ -358,7 +448,7 @@ function initS5() {
       datasets: [
         { data: d.elderlyAlone.age6574, borderColor: '#185FA5', tension: 0.3, pointRadius: 3 },
         { data: d.elderlyAlone.age7584, borderColor: '#D85A30', tension: 0.3, pointRadius: 3, borderDash: [4, 3] },
-        { data: d.elderlyAlone.age85p, borderColor: '#7F77DD', tension: 0.3, pointRadius: 3, borderDash: [2, 4] },
+        { data: d.elderlyAlone.age85p,  borderColor: '#7F77DD', tension: 0.3, pointRadius: 3, borderDash: [2, 4] },
       ]
     },
     options: {
@@ -386,6 +476,9 @@ function initS5() {
   });
 }
 
+// ══════════════════════════════════════════════
+// 토글 콜백
+// ══════════════════════════════════════════════
 function setBirthYear(yr) {
   buildMonthCombo('c_bmonth', 'lg-bmonth', 'note-bmonth', DASHBOARD_DATA.birthMonthly, yr, String(parseInt(yr) - 1), '#185FA5', '#85B7EB');
 }
@@ -397,6 +490,9 @@ function setHHMode(mode) {
   drawHH();
 }
 
+// ══════════════════════════════════════════════
+// 탭 전환
+// ══════════════════════════════════════════════
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -405,42 +501,38 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const sec = document.getElementById(btn.dataset.tab);
     sec.classList.add('active');
     const id = btn.dataset.tab;
-    // display:none → block 전환 후 레이아웃 확정되도록 한 프레임 대기
     requestAnimationFrame(() => {
-      if (id === 's1') initS1();
+      if      (id === 's1') initS1();
       else if (id === 's2') initS2();
       else if (id === 's3') initS3();
       else if (id === 's4') initS4();
       else if (id === 's5') initS5();
+      else if (id === 's6') initS6();
     });
   });
 });
 
 window.addEventListener('DOMContentLoaded', () => initS1());
-// ─── 자치구별 인구 현황 차트 ───────────────────
+
+// ══════════════════════════════════════════════
+// 자치구별 차트 (S1 내)
+// ══════════════════════════════════════════════
 function renderDistrictChart() {
   const d = DASHBOARD_DATA.districtPopulation;
-
-  // 정렬 기준 가져오기 (기본: 등록인구)
   const sortKey = document.getElementById('districtSort')?.value || 'registered';
-  const indices = d.districts.map((_, i) => i)
-    .sort((a, b) => d[sortKey][b] - d[sortKey][a]);
-
+  const indices = d.districts.map((_, i) => i).sort((a, b) => d[sortKey][b] - d[sortKey][a]);
   const labels     = indices.map(i => d.districts[i]);
   const registered = indices.map(i => d.registered[i]);
   const residents  = indices.map(i => d.residents[i]);
   const foreigners = indices.map(i => d.foreigners[i]);
-
   mkChart('c_district', {
     type: 'bar',
     data: {
       labels,
       datasets: [
-        { label: '주민등록인구', data: residents,  backgroundColor: 'rgba(37,99,235,0.75)',  order: 2 },
-        { label: '등록외국인',   data: foreigners, backgroundColor: 'rgba(239,68,68,0.75)',   order: 1 },
-        { label: '등록인구(합계)', data: registered, type: 'line',
-          borderColor: '#f59e0b', backgroundColor: 'transparent',
-          pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, order: 0 },
+        { label: '주민등록인구', data: residents,  backgroundColor: 'rgba(37,99,235,0.75)', order: 2 },
+        { label: '등록외국인',   data: foreigners, backgroundColor: 'rgba(239,68,68,0.75)',  order: 1 },
+        { label: '등록인구(합계)', data: registered, type: 'line', borderColor: '#f59e0b', backgroundColor: 'transparent', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, order: 0 },
       ],
     },
     options: {
@@ -448,42 +540,29 @@ function renderDistrictChart() {
       maintainAspectRatio: false,
       plugins: {
         legend: { position: 'top' },
-        tooltip: {
-          callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명`,
-          },
-        },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
       },
       scales: {
         x: { stacked: false, ticks: { font: { size: 11 } } },
-        y: { stacked: false,
-          ticks: { callback: v => (v/10000).toFixed(0)+'만' },
-          title: { display: true, text: '인구 (명)' },
-        },
+        y: { stacked: false, ticks: { callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '인구 (명)' } },
       },
     },
   });
 }
 
-// 외국인 비율 도넛 (Top10)
 function renderForeignRatioChart() {
   const d = DASHBOARD_DATA.districtPopulation;
   const ratios = d.districts.map((name, i) => ({
-    name, ratio: (d.foreigners[i] / d.registered[i] * 100).toFixed(1),
-    count: d.foreigners[i],
+    name, ratio: (d.foreigners[i] / d.registered[i] * 100).toFixed(1), count: d.foreigners[i],
   })).sort((a, b) => b.ratio - a.ratio).slice(0, 10);
-
-mkChart('c_foreign_ratio', {
+  mkChart('c_foreign_ratio', {
     type: 'bar',
     data: {
       labels: ratios.map(r => r.name),
       datasets: [{
         label: '외국인 비율 (%)',
         data: ratios.map(r => r.ratio),
-        backgroundColor: [
-          '#ef4444','#f97316','#f59e0b','#eab308','#84cc16',
-          '#22c55e','#14b8a6','#3b82f6','#8b5cf6','#ec4899'
-        ],
+        backgroundColor: ['#ef4444','#f97316','#f59e0b','#eab308','#84cc16','#22c55e','#14b8a6','#3b82f6','#8b5cf6','#ec4899'],
       }],
     },
     options: {
@@ -492,15 +571,9 @@ mkChart('c_foreign_ratio', {
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => `외국인 비율: ${ctx.parsed.x}% (${ratios[ctx.dataIndex].count.toLocaleString()}명)`,
-          },
-        },
+        tooltip: { callbacks: { label: ctx => `외국인 비율: ${ctx.parsed.x}% (${ratios[ctx.dataIndex].count.toLocaleString()}명)` } },
       },
-      scales: {
-        x: { title: { display: true, text: '외국인 비율 (%)' } },
-      },
+      scales: { x: { title: { display: true, text: '외국인 비율 (%)' } } },
     },
   });
 }
