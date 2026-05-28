@@ -148,8 +148,6 @@ s3: [
       { label: '고령 1인가구 (\'52)', value: '68.9만', trend: 'down', note: '현재 35.6만의 약 2배' },
     ],
   },
-
-},
 // ─── 자치구별 인구 현황 (2025년 기준) ───
   districtPopulation: {
     districts: [
