@@ -149,7 +149,7 @@ s3: [
     ],
   },
 
-};
+},
 // ─── 자치구별 인구 현황 (2025년 기준) ───
   districtPopulation: {
     districts: [
