@@ -8,9 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 </head>
 <body>
-
   <div class="dashboard">
-
     <header class="dash-header">
       <div>
         <h1>서울시 인구변화 대시보드</h1>
@@ -25,6 +23,7 @@
       <button class="tab-btn" data-tab="s4">인구이동</button>
       <button class="tab-btn" data-tab="s5">외국인</button>
       <button class="tab-btn" data-tab="s6">장래 추계</button>
+      <button class="tab-btn" data-tab="s7">생활인구</button>
     </nav>
 
     <main class="dash-main">
@@ -33,9 +32,10 @@
       <section id="s1" class="tab-section active">
         <div class="kpi-row" id="kpi-s1"></div>
         <div class="chart-card full">
-          <div class="chart-title">서울 등록인구 추이 (만명)</div>
+          <div class="chart-title">서울시 인구 추이 (만명)</div>
           <div class="legend" id="lg-pop"></div>
-          <div class="chart-wrap h220"><canvas id="c_pop"></canvas></div>
+          <div class="chart-wrap h240"><canvas id="c_pop"></canvas></div>
+          <div class="chart-note">자료: 인구총조사(국가데이터처)·주민등록인구(행안부)·생활인구(서울시) · * 총인구·등록인구는 내외국인 합산</div>
         </div>
         <div class="chart-row">
           <div class="chart-card">
@@ -63,8 +63,8 @@
           <div class="chart-note">자료: 주민등록인구(행안부), 등록외국인(법무부) · 2025년 기준</div>
         </div>
         <div class="chart-card full">
-          <div class="chart-title">외국인 비율 상위 10개 자치구 (등록인구 대비, 2025)</div>
-          <div class="chart-wrap h280"><canvas id="c_foreign_ratio"></canvas></div>
+          <div class="chart-title">자치구별 외국인 비율 (등록인구 대비, 2025)</div>
+          <div class="chart-wrap h300"><canvas id="c_foreign_ratio"></canvas></div>
           <div class="chart-note">자료: 주민등록인구(행안부), 등록외국인(법무부) · 2025년 기준</div>
         </div>
       </section>
@@ -73,9 +73,10 @@
       <section id="s2" class="tab-section">
         <div class="kpi-row" id="kpi-s2"></div>
         <div class="chart-card full">
-          <div class="chart-title">출생아 수 및 합계출산율 추이</div>
+          <div class="chart-title">출생아 수 및 합계출산율 추이 (1998~2025)</div>
+          <div class="toggle-row" id="tg-birth-region"></div>
           <div class="legend" id="lg-birth"></div>
-          <div class="chart-wrap h220"><canvas id="c_birth"></canvas></div>
+          <div class="chart-wrap h240"><canvas id="c_birth"></canvas></div>
         </div>
         <div class="chart-card full">
           <div class="chart-title">월별 출생아 수 — 전년동월 비교</div>
@@ -102,10 +103,14 @@
       <section id="s3" class="tab-section">
         <div class="kpi-row" id="kpi-s3"></div>
         <div class="chart-card full">
-          <div class="chart-title">가구원수별 비중 변화</div>
-          <div class="toggle-row" id="tg-hh"></div>
+          <div class="chart-title">가구원수별 비중 추이 (%)</div>
           <div class="legend" id="lg-hh"></div>
           <div class="chart-wrap h240"><canvas id="c_hh"></canvas></div>
+        </div>
+        <div class="chart-card full">
+          <div class="chart-title">세대구성별 가구 추이 (%)</div>
+          <div class="legend" id="lg-gen"></div>
+          <div class="chart-wrap h220"><canvas id="c_gen"></canvas></div>
         </div>
         <div class="chart-row">
           <div class="chart-card">
@@ -113,10 +118,15 @@
             <div class="chart-wrap h220"><canvas id="c_1ph"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-title">세대구성별 가구 추이 (%)</div>
-            <div class="legend" id="lg-gen"></div>
-            <div class="chart-wrap h220"><canvas id="c_gen"></canvas></div>
+            <div class="chart-title">1인가구 연령별 시계열 (2015~2024)</div>
+            <div class="legend" id="lg-1page"></div>
+            <div class="chart-wrap h220"><canvas id="c_1page"></canvas></div>
           </div>
+        </div>
+        <div class="chart-card full">
+          <div class="chart-title">자치구별 연령별 1인가구 현황 (2024)</div>
+          <div class="chart-note" style="margin-bottom:6px;">생활권별 배경 색상 · 자료: 인구총조사(국가데이터처)</div>
+          <div class="chart-wrap h320"><canvas id="c_district_1p"></canvas></div>
         </div>
       </section>
 
@@ -139,29 +149,19 @@
         </div>
       </section>
 
-      <!-- ══ S5: 외국인 (신규) ══ -->
+      <!-- ══ S5: 외국인 ══ -->
       <section id="s5" class="tab-section">
         <div class="kpi-row" id="kpi-s5"></div>
-
-        <!-- 외국인 주민 유형별 추이 -->
         <div class="chart-card full">
           <div class="chart-title">외국인 주민 유형별 추이 (2015~2024)</div>
-          <div class="chart-note" style="margin-bottom:6px;">
-            코로나 이후 유학생 급증·외국인근로자 감소. 자료: 행안부 지방자치단체외국인주민현황
-          </div>
+          <div class="chart-note" style="margin-bottom:6px;">코로나 이후 유학생 급증·외국인근로자 감소. 자료: 행안부 지방자치단체외국인주민현황</div>
           <div class="chart-wrap h280"><canvas id="c_for_type"></canvas></div>
         </div>
-
-        <!-- 등록외국인 체류자격별 추이 -->
         <div class="chart-card full">
           <div class="chart-title">등록외국인 체류자격별 추이 (2015~2025)</div>
-          <div class="chart-note" style="margin-bottom:6px;">
-            유학(D-2) 2025년 72,243명으로 1위 / 방문취업(H-2) 10년간 77% 급감. 자료: 법무부 등록외국인
-          </div>
+          <div class="chart-note" style="margin-bottom:6px;">유학(D-2) 2025년 72,243명으로 1위 / 방문취업(H-2) 10년간 77% 급감. 자료: 법무부</div>
           <div class="chart-wrap h280"><canvas id="c_for_visa"></canvas></div>
         </div>
-
-        <!-- 국적별 구성 (기존 s4에서 이동) -->
         <div class="chart-card full">
           <div class="chart-title">등록외국인 국적별 비중 변화 (2015~2025)</div>
           <div class="legend" id="lg-for"></div>
@@ -169,7 +169,7 @@
         </div>
       </section>
 
-      <!-- ══ S6: 장래 추계 (기존 S5) ══ -->
+      <!-- ══ S6: 장래 추계 ══ -->
       <section id="s6" class="tab-section">
         <div class="kpi-row" id="kpi-s6"></div>
         <div class="chart-card full">
@@ -191,11 +191,33 @@
         </div>
       </section>
 
+      <!-- ══ S7: 생활인구 ══ -->
+      <section id="s7" class="tab-section">
+        <div class="kpi-row" id="kpi-s7"></div>
+        <div class="chart-card full">
+          <div class="chart-title">서울시 생활인구 추이 (2017~2025)</div>
+          <div class="legend" id="lg-living"></div>
+          <div class="chart-wrap h260"><canvas id="c_living"></canvas></div>
+          <div class="chart-note">자료: 서울시 생활인구데이터(서울시) · 일 평균, 24시간 기준</div>
+        </div>
+        <div class="chart-card full">
+          <div class="chart-title">외국인 생활인구 — 장기·단기 체류 추이 (2017~2025)</div>
+          <div class="legend" id="lg-living-for"></div>
+          <div class="chart-wrap h240"><canvas id="c_living_for"></canvas></div>
+          <div class="chart-note">코로나19로 2021년까지 급감, 2022년부터 회복. 자료: 서울시 생활인구데이터</div>
+        </div>
+        <div class="chart-card full">
+          <div class="chart-title">수도권 생활이동 추이 (2023~2025)</div>
+          <div class="legend" id="lg-capital"></div>
+          <div class="chart-wrap h220"><canvas id="c_capital"></canvas></div>
+          <div class="chart-note">자료: 수도권 생활이동 데이터(서울시) · 일 평균, 24시간 기준</div>
+        </div>
+      </section>
+
     </main>
   </div>
 
   <script src="data/data.js"></script>
   <script src="js/charts.js"></script>
-
 </body>
 </html>
