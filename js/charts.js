@@ -416,7 +416,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 window.addEventListener('DOMContentLoaded', () => initS1());
 // ─── 자치구별 인구 현황 차트 ───────────────────
 function renderDistrictChart() {
-  const d = DASHBOARD_DASHBOARD_DATA.districtPopulation;
+  const d = DASHBOARD_DATA.districtPopulation;
 
   // 정렬 기준 가져오기 (기본: 등록인구)
   const sortKey = document.getElementById('districtSort')?.value || 'registered';
