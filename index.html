@@ -57,6 +57,42 @@
             <div class="chart-wrap h220"><canvas id="c_sex"></canvas></div>
           </div>
         </div>
+   <!-- 자치구별 인구 현황 -->
+        <div class="chart-card full">
+          <div class="chart-title">자치구별 인구 현황 (2025)</div>
+          <div class="toggle-row">
+            <label for="districtSort" style="font-size:13px;color:#555;">정렬 기준:</label>
+            <select id="districtSort" style="margin-left:6px;font-size:13px;padding:2px 6px;border:1px solid #ddd;border-radius:4px;">
+              <option value="registered">등록인구 순</option>
+              <option value="residents">주민등록인구 순</option>
+              <option value="foreigners">등록외국인 순</option>
+            </select>
+          </div>
+          <div class="chart-wrap h300"><canvas id="c_district"></canvas></div>
+          <div class="chart-note">자료: 주민등록인구(행안부), 등록외국인(법무부) · 2025년 기준</div>
+        </div>
+
+        <!-- 자치구별 외국인 비율 Top10 -->
+        <div class="chart-card full">
+          <div class="chart-title">외국인 비율 상위 10개 자치구 (등록인구 대비, 2025)</div>
+          <div class="chart-wrap h280"><canvas id="c_foreign_ratio"></canvas></div>
+          <div class="chart-note">자료: 주민등록인구(행안부), 등록외국인(법무부) · 2025년 기준</div>
+        </div>
+  </div>
+  <div class="chart-wrapper" style="height:380px;">
+    <canvas id="districtPopChart"></canvas>
+  </div>
+  <p class="chart-note">자료: 주민등록인구(행안부), 등록외국인(법무부) · 2025년 기준</p>
+</section>
+
+<!-- 외국인 비율 Top10 -->
+<section class="chart-section">
+  <h3>외국인 비율 상위 10개 자치구 (등록인구 대비, 2025)</h3>
+  <div class="chart-wrapper" style="height:320px;">
+    <canvas id="foreignRatioChart"></canvas>
+  </div>
+  <p class="chart-note">자료: 주민등록인구(행안부), 등록외국인(법무부) · 2025년 기준</p>
+</section>
       </section>
 
       <section id="s2" class="tab-section">
