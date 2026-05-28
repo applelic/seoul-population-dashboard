@@ -186,6 +186,10 @@ function initS1() {
     },
     options: { ...baseOpts, scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, min: 85 } } }
   });
+  renderDistrictChart();
+  renderForeignRatioChart();
+  document.getElementById('districtSort')
+    .addEventListener('change', renderDistrictChart);
 }
 
 function initS2() {
