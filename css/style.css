@@ -125,6 +125,8 @@ body {
 .chart-wrap.h220 { height: 220px; }
 .chart-wrap.h240 { height: 240px; }
 .chart-wrap.h260 { height: 260px; }
+.chart-wrap.h280 { height: 280px; }
+.chart-wrap.h300 { height: 300px; }
 
 /* 범례 */
 .legend {
