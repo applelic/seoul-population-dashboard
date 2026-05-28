@@ -405,11 +405,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const sec = document.getElementById(btn.dataset.tab);
     sec.classList.add('active');
     const id = btn.dataset.tab;
-    if (id === 's1') initS1();
-    else if (id === 's2') initS2();
-    else if (id === 's3') initS3();
-    else if (id === 's4') initS4();
-    else if (id === 's5') initS5();
+    // display:none → block 전환 후 레이아웃 확정되도록 한 프레임 대기
+    requestAnimationFrame(() => {
+      if (id === 's1') initS1();
+      else if (id === 's2') initS2();
+      else if (id === 's3') initS3();
+      else if (id === 's4') initS4();
+      else if (id === 's5') initS5();
+    });
   });
 });
 
