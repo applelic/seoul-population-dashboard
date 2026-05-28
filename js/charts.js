@@ -412,7 +412,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 window.addEventListener('DOMContentLoaded', () => initS1());
 // ─── 자치구별 인구 현황 차트 ───────────────────
 function renderDistrictChart() {
-  const d = DATA.districtPopulation;
+  const d = DASHBOARD_DASHBOARD_DATA.districtPopulation;
 
   // 정렬 기준 가져오기 (기본: 등록인구)
   const sortKey = document.getElementById('districtSort')?.value || 'registered';
@@ -462,7 +462,7 @@ function renderDistrictChart() {
 
 // 외국인 비율 도넛 (Top10)
 function renderForeignRatioChart() {
-  const d = DATA.districtPopulation;
+  const d = DASHBOARD_DATA.districtPopulation;
   const ratios = d.districts.map((name, i) => ({
     name, ratio: (d.foreigners[i] / d.registered[i] * 100).toFixed(1),
     count: d.foreigners[i],
