@@ -428,9 +428,7 @@ function renderDistrictChart() {
   const residents  = indices.map(i => d.residents[i]);
   const foreigners = indices.map(i => d.foreigners[i]);
 
-  const ctx = getOrCreate('c_district');
-  if (window._districtChart) window._districtChart.destroy();
-  window._districtChart = new Chart(ctx, {
+  mkChart('c_district', {
     type: 'bar',
     data: {
       labels,
@@ -472,9 +470,7 @@ function renderForeignRatioChart() {
     count: d.foreigners[i],
   })).sort((a, b) => b.ratio - a.ratio).slice(0, 10);
 
-const ctx = getOrCreate('c_foreign_ratio');
-  if (window._foreignChart) window._foreignChart.destroy();
-  window._foreignChart = new Chart(ctx, {
+mkChart('c_foreign_ratio', {
     type: 'bar',
     data: {
       labels: ratios.map(r => r.name),
