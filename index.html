@@ -14,30 +14,22 @@
     <header class="dash-header">
       <div>
         <h1>서울시 인구변화 대시보드</h1>
-        <span class="header-sub">2026. 4. 기준 · 자료: 국가데이터처, 행안부, 법무부</span>
+        <span class="header-sub">2026. 5. 기준 · 자료: 국가데이터처, 행안부, 법무부</span>
       </div>
     </header>
 
     <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="s1">
-        인구 규모·구조
-      </button>
-      <button class="tab-btn" data-tab="s2">
-        출생·혼인 동향
-      </button>
-      <button class="tab-btn" data-tab="s3">
-        가구 구조
-      </button>
-      <button class="tab-btn" data-tab="s4">
-        인구이동·외국인
-      </button>
-      <button class="tab-btn" data-tab="s5">
-        장래 추계
-      </button>
+      <button class="tab-btn active" data-tab="s1">인구 규모·구조</button>
+      <button class="tab-btn" data-tab="s2">출생·혼인 동향</button>
+      <button class="tab-btn" data-tab="s3">가구 구조</button>
+      <button class="tab-btn" data-tab="s4">인구이동</button>
+      <button class="tab-btn" data-tab="s5">외국인</button>
+      <button class="tab-btn" data-tab="s6">장래 추계</button>
     </nav>
 
     <main class="dash-main">
 
+      <!-- ══ S1: 인구 규모·구조 ══ -->
       <section id="s1" class="tab-section active">
         <div class="kpi-row" id="kpi-s1"></div>
         <div class="chart-card full">
@@ -57,7 +49,6 @@
             <div class="chart-wrap h220"><canvas id="c_sex"></canvas></div>
           </div>
         </div>
-        <!-- 자치구별 인구 현황 -->
         <div class="chart-card full">
           <div class="chart-title">자치구별 인구 현황 (2025)</div>
           <div class="toggle-row">
@@ -71,7 +62,6 @@
           <div class="chart-wrap h300"><canvas id="c_district"></canvas></div>
           <div class="chart-note">자료: 주민등록인구(행안부), 등록외국인(법무부) · 2025년 기준</div>
         </div>
-        <!-- 자치구별 외국인 비율 Top10 -->
         <div class="chart-card full">
           <div class="chart-title">외국인 비율 상위 10개 자치구 (등록인구 대비, 2025)</div>
           <div class="chart-wrap h280"><canvas id="c_foreign_ratio"></canvas></div>
@@ -79,6 +69,7 @@
         </div>
       </section>
 
+      <!-- ══ S2: 출생·혼인 동향 ══ -->
       <section id="s2" class="tab-section">
         <div class="kpi-row" id="kpi-s2"></div>
         <div class="chart-card full">
@@ -107,6 +98,7 @@
         </div>
       </section>
 
+      <!-- ══ S3: 가구 구조 ══ -->
       <section id="s3" class="tab-section">
         <div class="kpi-row" id="kpi-s3"></div>
         <div class="chart-card full">
@@ -128,6 +120,7 @@
         </div>
       </section>
 
+      <!-- ══ S4: 인구이동 ══ -->
       <section id="s4" class="tab-section">
         <div class="kpi-row" id="kpi-s4"></div>
         <div class="chart-card full">
@@ -140,19 +133,45 @@
             <div class="chart-wrap h220"><canvas id="c_mage"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-title">등록외국인 국적별 비중 변화</div>
-            <div class="legend" id="lg-for"></div>
-            <div class="chart-wrap h220"><canvas id="c_for"></canvas></div>
+            <div class="chart-title">사유별 순이동 (2025)</div>
+            <div class="chart-wrap h220"><canvas id="c_reason"></canvas></div>
           </div>
-        </div>
-        <div class="chart-card full">
-          <div class="chart-title">사유별 순이동 (2025)</div>
-          <div class="chart-wrap h200"><canvas id="c_reason"></canvas></div>
         </div>
       </section>
 
+      <!-- ══ S5: 외국인 (신규) ══ -->
       <section id="s5" class="tab-section">
         <div class="kpi-row" id="kpi-s5"></div>
+
+        <!-- 외국인 주민 유형별 추이 -->
+        <div class="chart-card full">
+          <div class="chart-title">외국인 주민 유형별 추이 (2015~2024)</div>
+          <div class="chart-note" style="margin-bottom:6px;">
+            코로나 이후 유학생 급증·외국인근로자 감소. 자료: 행안부 지방자치단체외국인주민현황
+          </div>
+          <div class="chart-wrap h280"><canvas id="c_for_type"></canvas></div>
+        </div>
+
+        <!-- 등록외국인 체류자격별 추이 -->
+        <div class="chart-card full">
+          <div class="chart-title">등록외국인 체류자격별 추이 (2015~2025)</div>
+          <div class="chart-note" style="margin-bottom:6px;">
+            유학(D-2) 2025년 72,243명으로 1위 / 방문취업(H-2) 10년간 77% 급감. 자료: 법무부 등록외국인
+          </div>
+          <div class="chart-wrap h280"><canvas id="c_for_visa"></canvas></div>
+        </div>
+
+        <!-- 국적별 구성 (기존 s4에서 이동) -->
+        <div class="chart-card full">
+          <div class="chart-title">등록외국인 국적별 비중 변화 (2015~2025)</div>
+          <div class="legend" id="lg-for"></div>
+          <div class="chart-wrap h220"><canvas id="c_for"></canvas></div>
+        </div>
+      </section>
+
+      <!-- ══ S6: 장래 추계 (기존 S5) ══ -->
+      <section id="s6" class="tab-section">
+        <div class="kpi-row" id="kpi-s6"></div>
         <div class="chart-card full">
           <div class="chart-title">서울 인구 및 연령 구조 전망 (2024~2052)</div>
           <div class="legend" id="lg-proj"></div>
@@ -173,7 +192,6 @@
       </section>
 
     </main>
-
   </div>
 
   <script src="data/data.js"></script>
