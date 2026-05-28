@@ -130,10 +130,10 @@ const DASHBOARD_DATA = {
     ],
 s3: [
   { label: '총 가구 (\'24)', value: '431.9만', trend: 'up', note: '↑ 지속 증가' },
-  { label: '1인가구 비중 (\'24)', value: '39.9%<span class="kpi-sub">· 약 172만 가구</span>', trend: 'down', note: '↑ 1990년 9.1% → 급증' },
-  { label: '1·2인가구 합계', value: '66.1%<span class="kpi-sub">· 약 285만 가구</span>', trend: 'neutral', note: '2052년 76.3% 전망' },
-  { label: '고령자 가구 (\'24)', value: '30.2%<span class="kpi-sub">· 약 130만 가구</span>', trend: 'down', note: '↑ 2017년 24.8% → 상승' },
-  { label: '미성년자녀 가구', value: '17.2%<span class="kpi-sub">· 약 74만 가구</span>', trend: 'down', note: '↓ 2017년 24.5% → 감소' },
+  { label: '1인가구 비중 (\'24)', value: '39.9%', sub: '약 172만 가구', trend: 'down', note: '↑ 1990년 9.1% → 급증' },
+  { label: '1·2인가구 합계', value: '66.1%', sub: '약 285만 가구', trend: 'neutral', note: '2052년 76.3% 전망' },
+  { label: '고령자 가구 (\'24)', value: '30.2%', sub: '약 130만 가구', trend: 'down', note: '↑ 2017년 24.8% → 상승' },
+  { label: '미성년자녀 가구', value: '17.2%', sub: '약 74만 가구', trend: 'down', note: '↓ 2017년 24.5% → 감소' },
 ],
     s4: [
       { label: '순이동 (\'25)', value: '–2.7만', trend: 'up', note: '↑ 2024년 –4.5만 개선' },
