@@ -1,5 +1,4 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: #f5f5f3;
@@ -7,13 +6,11 @@ body {
   font-size: 14px;
   line-height: 1.5;
 }
-
 .dashboard {
   max-width: 1100px;
   margin: 0 auto;
   padding: 1.5rem 1rem;
 }
-
 /* 헤더 */
 .dash-header {
   display: flex;
@@ -31,7 +28,6 @@ body {
   color: #888;
   margin-left: 10px;
 }
-
 /* 탭 네비게이션 */
 .tab-nav {
   display: flex;
@@ -56,11 +52,10 @@ body {
   color: #1a1a1a;
   font-weight: 500;
 }
-
 /* 섹션 */
-.tab-section { display: none; }
+.dash-main { width: 100%; }
+.tab-section { display: none; width: 100%; }
 .tab-section.active { display: block; }
-
 /* KPI 카드 행 */
 .kpi-row {
   display: grid;
@@ -96,10 +91,8 @@ body {
   white-space: nowrap;
 }
 .kpi-note.up   { color: #1D9E75; }
-.kpi-note.up   { color: #1D9E75; }
 .kpi-note.down { color: #D85A30; }
 .kpi-note.neutral { color: #888; }
-
 /* 차트 카드 */
 .chart-card {
   background: #fff;
@@ -127,7 +120,6 @@ body {
 .chart-wrap.h260 { height: 260px; }
 .chart-wrap.h280 { height: 280px; }
 .chart-wrap.h300 { height: 300px; }
-
 /* 범례 */
 .legend {
   display: flex;
@@ -146,7 +138,6 @@ body {
   margin-right: 4px;
   vertical-align: middle;
 }
-
 /* 토글 버튼 */
 .toggle-row {
   display: flex;
@@ -169,7 +160,6 @@ body {
   color: #1a1a1a;
   font-weight: 500;
 }
-
 /* 차트 하단 노트 */
 .chart-note {
   font-size: 11px;
@@ -177,7 +167,6 @@ body {
   margin-top: 6px;
   line-height: 1.5;
 }
-
 /* 반응형 */
 @media (max-width: 600px) {
   .chart-row { grid-template-columns: 1fr; }
