@@ -452,8 +452,8 @@ function renderDistrictChart() {
         },
       },
       scales: {
-        x: { stacked: true, ticks: { font: { size: 11 } } },
-        y: { stacked: true,
+        x: { stacked: false, ticks: { font: { size: 11 } } },
+        y: { stacked: false,
           ticks: { callback: v => (v/10000).toFixed(0)+'만' },
           title: { display: true, text: '인구 (명)' },
         },
