@@ -88,8 +88,8 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
     data: {
       labels: labs,
       datasets: [
-        { type: 'bar', data: prev, backgroundColor: c2 + '88', yAxisID: 'y', order: 3 },
-        { type: 'bar', data: cur, backgroundColor: c1 + 'cc', yAxisID: 'y', order: 2 },
+        { type: 'bar', data: prev, backgroundColor: c2 + '88', yAxisID: 'y', order: 2 },
+        { type: 'bar', data: cur, backgroundColor: c1 + 'cc', yAxisID: 'y', order: 3 },
         {
           type: 'line', data: diff,
           borderColor: C.gray, backgroundColor: 'transparent',
