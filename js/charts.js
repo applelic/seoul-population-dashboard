@@ -409,9 +409,9 @@ function initS3() {
     const el = document.getElementById('lg-1page');
     if (!el) return;
     const items = [
-      { color: '#B5D4F4', label: '24세이하' }, { color: '#185FA5', label: '25~34세' },
-      { color: '#1D9E75', label: '35~44세'  }, { color: '#EF9F27', label: '45~54세' },
-      { color: '#D4537E', label: '55~64세'  }, { color: '#D85A30', label: '65세이상' },
+      { color: '#D85A30', label: '65세이상' }, { color: '#D4537E', label: '55~64세' },
+      { color: '#EF9F27', label: '45~54세'  }, { color: '#1D9E75', label: '35~44세' },
+      { color: '#185FA5', label: '25~34세'  }, { color: '#B5D4F4', label: '24세이하' },
     ];
     el.innerHTML = items.map(i =>
       '<span style="display:flex;align-items:center;gap:5px;white-space:nowrap;">' +
@@ -424,12 +424,12 @@ function initS3() {
     data: {
       labels: sd.years,
       datasets: [
-        { label: '24세이하', data: sd.age24,  backgroundColor: '#B5D4F4', stack: 'a' },
-        { label: '25~34세', data: sd.age34,  backgroundColor: C.navy,    stack: 'a' },
-        { label: '35~44세', data: sd.age44,  backgroundColor: C.teal,    stack: 'a' },
-        { label: '45~54세', data: sd.age54,  backgroundColor: C.amber,   stack: 'a' },
-        { label: '55~64세', data: sd.age64,  backgroundColor: C.pink,    stack: 'a' },
         { label: '65세이상', data: sd.age65p, backgroundColor: C.red,     stack: 'a' },
+        { label: '55~64세', data: sd.age64,  backgroundColor: C.pink,    stack: 'a' },
+        { label: '45~54세', data: sd.age54,  backgroundColor: C.amber,   stack: 'a' },
+        { label: '35~44세', data: sd.age44,  backgroundColor: C.teal,    stack: 'a' },
+        { label: '25~34세', data: sd.age34,  backgroundColor: C.navy,    stack: 'a' },
+        { label: '24세이하', data: sd.age24,  backgroundColor: '#B5D4F4', stack: 'a' },
       ]
     },
     options: {
@@ -477,12 +477,12 @@ function renderDistrict1pChart() {
     data: {
       labels: d.districts,
       datasets: [
-        { label: '24세이하', data: d.age24,  backgroundColor: '#B5D4F4', stack: 'a' },
-        { label: '25~34세', data: d.age34,  backgroundColor: C.navy,    stack: 'a' },
-        { label: '35~44세', data: d.age44,  backgroundColor: C.teal,    stack: 'a' },
-        { label: '45~54세', data: d.age54,  backgroundColor: C.amber,   stack: 'a' },
-        { label: '55~64세', data: d.age64,  backgroundColor: C.pink,    stack: 'a' },
         { label: '65세이상', data: d.age65p, backgroundColor: C.red,     stack: 'a' },
+        { label: '55~64세', data: d.age64,  backgroundColor: C.pink,    stack: 'a' },
+        { label: '45~54세', data: d.age54,  backgroundColor: C.amber,   stack: 'a' },
+        { label: '35~44세', data: d.age44,  backgroundColor: C.teal,    stack: 'a' },
+        { label: '25~34세', data: d.age34,  backgroundColor: C.navy,    stack: 'a' },
+        { label: '24세이하', data: d.age24,  backgroundColor: '#B5D4F4', stack: 'a' },
       ]
     },
     plugins: [bgPlugin],
@@ -509,9 +509,9 @@ function renderDistrict1pChart() {
     const el = document.getElementById('lg-district-1p');
     if (!el) return;
     const items = [
-      { color: '#B5D4F4', label: '24세이하' }, { color: '#185FA5', label: '25~34세' },
-      { color: '#1D9E75', label: '35~44세'  }, { color: '#EF9F27', label: '45~54세' },
-      { color: '#D4537E', label: '55~64세'  }, { color: '#D85A30', label: '65세이상' },
+      { color: '#D85A30', label: '65세이상' }, { color: '#D4537E', label: '55~64세' },
+      { color: '#EF9F27', label: '45~54세'  }, { color: '#1D9E75', label: '35~44세' },
+      { color: '#185FA5', label: '25~34세'  }, { color: '#B5D4F4', label: '24세이하' },
     ];
     el.innerHTML = items.map(i =>
       '<span style="display:flex;align-items:center;gap:5px;white-space:nowrap;">' +
