@@ -68,43 +68,31 @@ const MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','
 function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1, c2) {
   const cy = dataObj[parseInt(curYear)];
   const py = dataObj[parseInt(prevYear)];
-  const labs = [], cur = [], prev = [], diff = [];
+  const labs = [], cur = [], prev = [];
   cy.forEach((v, i) => {
     labs.push(MONTHS[i]);
     cur.push(v);
     prev.push(py[i]);
-    diff.push(v !== null && py[i] !== null ? Math.round((v - py[i]) / py[i] * 1000) / 10 : null);
   });
-  const pos = diff.filter(d => d !== null && d > 0).length;
   setLegend(lgId, [
     { color: c2, label: prevYear + '년(전년)' },
     { color: c1, label: curYear + '년' },
-    { color: C.gray, label: '증감율(%)', dash: true }
   ]);
-  document.getElementById(noteId).innerHTML =
-    `${curYear}년 ${labs.length}개월 중 <strong>${pos}개월</strong> 전년동월 대비 증가.`;
+  document.getElementById(noteId).innerHTML = '';
   mkChart(canvasId, {
     type: 'bar',
     data: {
       labels: labs,
       datasets: [
         { type: 'bar', data: prev, backgroundColor: c2 + '88', yAxisID: 'y', order: 2 },
-        { type: 'bar', data: cur, backgroundColor: c1 + 'cc', yAxisID: 'y', order: 3 },
-        {
-          type: 'line', data: diff,
-          borderColor: C.gray, backgroundColor: 'transparent',
-          pointRadius: 4,
-          pointBackgroundColor: diff.map(d => d >= 0 ? C.teal : C.red),
-          tension: 0.3, yAxisID: 'y1', order: 1
-        }
+        { type: 'bar', data: cur, backgroundColor: c1 + 'cc', yAxisID: 'y', order: 3 }
       ]
     },
     options: {
       ...baseOpts,
       scales: {
         x: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, autoSkip: false, maxRotation: 35 } },
-        y: { position: 'left', grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, callback: v => v.toLocaleString() } },
-        y1: { position: 'right', grid: { display: false }, ticks: { color: tc, font: { size: 10 }, callback: v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%' } }
+        y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, callback: v => v.toLocaleString() } }
       }
     }
   });
