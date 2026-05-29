@@ -155,7 +155,6 @@ function initS1() {
     options: { ...baseOpts, scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, min: 85 } } }
   });
   renderDistrictChart();
-  renderForeignRatioChart();
   document.getElementById('districtSort').addEventListener('change', renderDistrictChart);
 }
 
@@ -899,28 +898,6 @@ function renderDistrictChart() {
         x: { stacked: false, ticks: { font: { size: 11 } } },
         y: { stacked: false, ticks: { callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '인구 (명)' } },
       },
-    },
-  });
-}
-
-function renderForeignRatioChart() {
-  const d = DASHBOARD_DATA.districtPopulation;
-  const ratios = d.districts.map((name, i) => ({
-    name, ratio: (d.foreigners[i] / d.registered[i] * 100).toFixed(1), count: d.foreigners[i],
-  })).sort((a, b) => b.ratio - a.ratio);
-  mkChart('c_foreign_ratio', {
-    type: 'bar',
-    data: {
-      labels: ratios.map(r => r.name),
-      datasets: [{ label: '외국인 비율 (%)', data: ratios.map(r => r.ratio), backgroundColor: ratios.map((_, i) => `hsl(${220 - i * 8}, 70%, ${55 + i * 1.5}%)`) }],
-    },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `외국인 비율: ${ctx.parsed.x}% (${ratios[ctx.dataIndex].count.toLocaleString()}명)` } },
-      },
-      scales: { x: { title: { display: true, text: '외국인 비율 (%)' } } },
     },
   });
 }
