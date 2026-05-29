@@ -159,17 +159,26 @@
         <div class="chart-card full">
           <div class="chart-title">외국인 주민 유형별 추이 (2015~2024)</div>
           <div class="chart-note" style="margin-bottom:6px;">코로나 이후 유학생 급증·외국인근로자 감소. 자료: 행안부 지방자치단체외국인주민현황</div>
-          <div class="chart-wrap h280"><canvas id="c_for_type"></canvas></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="flex:1;min-width:0;"><div class="chart-wrap h280"><canvas id="c_for_type"></canvas></div></div>
+            <div id="lg-for-type" style="min-width:90px;flex-shrink:0;"></div>
+          </div>
         </div>
         <div class="chart-card full">
           <div class="chart-title">등록외국인 체류자격별 추이 (2015~2025)</div>
-          <div class="chart-note" style="margin-bottom:6px;">유학(D-2) 2025년 72,243명으로 1위 / 방문취업(H-2) 10년간 77% 급감. 자료: 법무부</div>
-          <div class="chart-wrap h280"><canvas id="c_for_visa"></canvas></div>
+          <div class="chart-note" style="margin-bottom:6px;">회색 막대: 총 등록외국인 / 유학(D-2) 2025년 72,243명으로 1위 / 방문취업(H-2) 10년간 77% 급감. 자료: 법무부</div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="flex:1;min-width:0;"><div class="chart-wrap h280"><canvas id="c_for_visa"></canvas></div></div>
+            <div id="lg-for-visa" style="min-width:110px;flex-shrink:0;"></div>
+          </div>
         </div>
         <div class="chart-card full">
           <div class="chart-title">등록외국인 국적별 비중 변화 (2015~2025)</div>
-          <div class="legend" id="lg-for"></div>
-          <div class="chart-wrap h220"><canvas id="c_for"></canvas></div>
+          <div class="chart-note" style="margin-bottom:6px;">회색 막대: 총 등록외국인(우축) / 선: 국적별 비중(%)</div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="flex:1;min-width:0;"><div class="chart-wrap h240"><canvas id="c_for"></canvas></div></div>
+            <div id="lg-for" style="min-width:110px;flex-shrink:0;"></div>
+          </div>
         </div>
       </section>
 
