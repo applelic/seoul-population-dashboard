@@ -719,15 +719,14 @@ function initS6() {
       }
     }
   });
-  setLegend('lg-elder', [{ color: C.navy, label: '65~74세' }, { color: C.red, label: '75~84세', dash: true }, { color: C.purple, label: '85세이상', dash: true }]);
   mkChart('c_elder', {
     type: 'line',
     data: {
       labels: d.elderlyAlone.years,
       datasets: [
-        { data: d.elderlyAlone.age6574, borderColor: C.navy,   tension: 0.3, pointRadius: 3 },
-        { data: d.elderlyAlone.age7584, borderColor: C.red,    tension: 0.3, pointRadius: 3, borderDash: [4, 3] },
-        { data: d.elderlyAlone.age85p,  borderColor: C.purple, tension: 0.3, pointRadius: 3, borderDash: [2, 4] },
+        { label: '65~74세', data: d.elderlyAlone.age6574, borderColor: C.navy,   tension: 0.3, pointRadius: 3 },
+        { label: '75~84세', data: d.elderlyAlone.age7584, borderColor: C.red,    tension: 0.3, pointRadius: 3, borderDash: [4, 3] },
+        { label: '85세이상', data: d.elderlyAlone.age85p,  borderColor: C.purple, tension: 0.3, pointRadius: 3, borderDash: [2, 4] },
       ]
     },
     options: {
@@ -736,15 +735,14 @@ function initS6() {
       plugins: { legend: { display: true, position: 'right', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } } }
     }
   });
-  setLegend('lg-hhp', [{ color: C.navy, label: '1인' }, { color: C.teal, label: '2인', dash: true }, { color: C.gray, label: '3인이상', dash: true }]);
   mkChart('c_hhp', {
     type: 'line',
     data: {
       labels: d.projection.years,
       datasets: [
-        { data: d.projection.single, borderColor: C.navy, tension: 0.3, pointRadius: 4 },
-        { data: [26.2, 27.4, 28.4, 29.7, 30.9, 32.2, 33.3, 33.7], borderColor: C.teal, tension: 0.3, pointRadius: 4, borderDash: [4, 3] },
-        { data: [33.9, 31.4, 29.5, 27.5, 26.0, 24.7, 24.1, 23.8], borderColor: C.gray, tension: 0.3, pointRadius: 4, borderDash: [2, 4] },
+        { label: '1인',    data: d.projection.single, borderColor: C.navy, tension: 0.3, pointRadius: 4 },
+        { label: '2인',    data: [26.2, 27.4, 28.4, 29.7, 30.9, 32.2, 33.3, 33.7], borderColor: C.teal, tension: 0.3, pointRadius: 4, borderDash: [4, 3] },
+        { label: '3인이상', data: [33.9, 31.4, 29.5, 27.5, 26.0, 24.7, 24.1, 23.8], borderColor: C.gray, tension: 0.3, pointRadius: 4, borderDash: [2, 4] },
       ]
     },
     options: {
