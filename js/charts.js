@@ -409,9 +409,9 @@ function initS3() {
     const el = document.getElementById('lg-1page');
     if (!el) return;
     const items = [
-      { color: '#D85A30', label: '65세이상' }, { color: '#D4537E', label: '55~64세' },
-      { color: '#EF9F27', label: '45~54세'  }, { color: '#1D9E75', label: '35~44세' },
-      { color: '#185FA5', label: '25~34세'  }, { color: '#B5D4F4', label: '24세이하' },
+      { color: '#B5D4F4', label: '24세이하' }, { color: '#185FA5', label: '25~34세' },
+      { color: '#1D9E75', label: '35~44세'  }, { color: '#EF9F27', label: '45~54세' },
+      { color: '#D4537E', label: '55~64세'  }, { color: '#D85A30', label: '65세이상' },
     ];
     el.innerHTML = items.map(i =>
       '<span style="display:flex;align-items:center;gap:5px;white-space:nowrap;">' +
@@ -509,9 +509,9 @@ function renderDistrict1pChart() {
     const el = document.getElementById('lg-district-1p');
     if (!el) return;
     const items = [
-      { color: '#D85A30', label: '65세이상' }, { color: '#D4537E', label: '55~64세' },
-      { color: '#EF9F27', label: '45~54세'  }, { color: '#1D9E75', label: '35~44세' },
-      { color: '#185FA5', label: '25~34세'  }, { color: '#B5D4F4', label: '24세이하' },
+      { color: '#B5D4F4', label: '24세이하' }, { color: '#185FA5', label: '25~34세' },
+      { color: '#1D9E75', label: '35~44세'  }, { color: '#EF9F27', label: '45~54세' },
+      { color: '#D4537E', label: '55~64세'  }, { color: '#D85A30', label: '65세이상' },
     ];
     el.innerHTML = items.map(i =>
       '<span style="display:flex;align-items:center;gap:5px;white-space:nowrap;">' +
