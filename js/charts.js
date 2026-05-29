@@ -19,6 +19,18 @@ const C = {
   navy: '#185FA5', purple: '#7F77DD',
 };
 
+
+// 오른쪽 세로 범례 렌더 헬퍼
+function renderRightLegend(id, items) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.cssText = 'display:flex;flex-direction:column;gap:6px;font-size:11px;color:' + (D ? '#aaa' : '#666') + ';padding-top:4px;min-width:80px;flex-shrink:0;';
+  el.innerHTML = items.map(function(i) {
+    var dot = '<span style="width:10px;height:10px;border-radius:2px;background:' + i.color + ';flex-shrink:0;' + (i.dash ? 'border:1.5px dashed ' + i.color + ';background:transparent;' : '') + '"></span>';
+    return '<span style="display:flex;align-items:center;gap:5px;white-space:nowrap;">' + dot + i.label + '</span>';
+  }).join('');
+}
+
 function mkChart(id, cfg) {
   if (charts[id]) charts[id].destroy();
   const el = document.getElementById(id);
@@ -545,9 +557,18 @@ function initS4() {
 // ══════════════════════════════════════════════
 // S5: 외국인
 // ══════════════════════════════════════════════
+
+// 등록외국인 총계 (data.js foreignVisaType.years 순서와 동일: 2015~2025)
+// 출처: 법무부 등록외국인 현황 합계
+const _forVisaTotal = [337600, 332083, 276031, 312590, 329910, 255044, 256631, 336543, 366539, 397791, 393200];
+// 국적별 비중 차트용 총수 (foreignNationality.years: 2015,2020~2025)
+const _forNatTotal  = [337600, 255044, 256631, 336543, 366539, 397791, 393200];
+
 function initS5() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s5', d.kpi.s5);
+
+  // ── 1) 외국인 주민 유형별 누적 막대 (범례 오른쪽)
   mkChart('c_for_type', {
     type: 'bar',
     data: {
@@ -565,8 +586,11 @@ function initS5() {
     options: {
       responsive: true, maintainAspectRatio: false, interaction: { mode: 'index' },
       plugins: {
-        legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } },
-        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명`, footer: items => `합계: ${items.reduce((s, i) => s + (i.raw || 0), 0).toLocaleString()}명` } }
+        legend: { display: false },
+        tooltip: { callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명`,
+          footer: items => `합계: ${items.reduce((s, i) => s + (i.raw || 0), 0).toLocaleString()}명`
+        }}
       },
       scales: {
         x: { stacked: true, grid: { color: gc }, ticks: { color: tc, font: { size: 11 } } },
@@ -574,53 +598,100 @@ function initS5() {
       }
     }
   });
+  renderRightLegend('lg-for-type', [
+    { color: '#4F81BD', label: '외국인근로자' }, { color: '#8064A2', label: '외국국적동포' },
+    { color: '#F79646', label: '기타외국인'   }, { color: '#9BBB59', label: '유학생'       },
+    { color: '#C0504D', label: '결혼이민자'   }, { color: '#4BACC6', label: '한국국적취득' },
+    { color: '#D9D9D9', label: '자녀(출생)'   },
+  ]);
+
+  // ── 2) 체류자격별 추이 — 총 등록외국인 회색 막대 + 선
   mkChart('c_for_visa', {
-    type: 'line',
     data: {
       labels: d.foreignVisaType.years.map(String),
       datasets: [
-        { label: '유학(D-2)',     data: d.foreignVisaType.D2, borderColor: '#9BBB59', borderWidth: 3, pointRadius: 4, tension: 0.3 },
-        { label: '방문취업(H-2)', data: d.foreignVisaType.H2, borderColor: '#C0504D', borderWidth: 3, pointRadius: 4, tension: 0.3 },
-        { label: '영주(F-5)',     data: d.foreignVisaType.F5, borderColor: '#4F81BD', borderWidth: 2, pointRadius: 3, tension: 0.3 },
-        { label: '결혼이민(F-6)', data: d.foreignVisaType.F6, borderColor: '#8064A2', borderWidth: 2, pointRadius: 3, tension: 0.3 },
-        { label: '방문동거(F-1)', data: d.foreignVisaType.F1, borderColor: '#F79646', borderWidth: 2, pointRadius: 3, tension: 0.3 },
-        { label: '일반연수(D-4)', data: d.foreignVisaType.D4, borderColor: '#4BACC6', borderWidth: 2, pointRadius: 3, tension: 0.3 },
-        { label: '거주(F-2)',     data: d.foreignVisaType.F2, borderColor: '#948A54', borderWidth: 2, pointRadius: 3, tension: 0.3 },
+        { type: 'bar',  label: '총 등록외국인', data: _forVisaTotal,
+          backgroundColor: 'rgba(180,178,169,0.35)', hoverBackgroundColor: 'rgba(180,178,169,0.55)',
+          yAxisID: 'yBar', order: 2, barPercentage: 0.7, categoryPercentage: 0.75 },
+        { type: 'line', label: '유학(D-2)',     data: d.foreignVisaType.D2, borderColor: '#9BBB59', borderWidth: 3, pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '방문취업(H-2)', data: d.foreignVisaType.H2, borderColor: '#C0504D', borderWidth: 3, pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '영주(F-5)',     data: d.foreignVisaType.F5, borderColor: '#4F81BD', borderWidth: 2, pointRadius: 3, tension: 0.3, yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '결혼이민(F-6)', data: d.foreignVisaType.F6, borderColor: '#8064A2', borderWidth: 2, pointRadius: 3, tension: 0.3, yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '방문동거(F-1)', data: d.foreignVisaType.F1, borderColor: '#F79646', borderWidth: 2, pointRadius: 3, tension: 0.3, yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '일반연수(D-4)', data: d.foreignVisaType.D4, borderColor: '#4BACC6', borderWidth: 2, pointRadius: 3, tension: 0.3, yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '거주(F-2)',     data: d.foreignVisaType.F2, borderColor: '#948A54', borderWidth: 2, pointRadius: 3, tension: 0.3, yAxisID: 'yLine', order: 1 },
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index' },
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } },
-        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명` } }
+        legend: { display: false },
+        tooltip: { callbacks: {
+          title: items => items[0].label + '년',
+          label(ctx) {
+            if (ctx.dataset.label === '총 등록외국인') return ` 총 등록외국인: ${ctx.raw.toLocaleString()}명`;
+            return ` ${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명`;
+          }
+        }}
       },
       scales: {
-        x: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 } } },
-        y: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, callback: v => (v / 10000).toFixed(0) + '만' } }
+        x:    { grid: { color: gc }, ticks: { color: tc, font: { size: 11 } } },
+        yBar: { position: 'left',  grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, callback: v => (v / 10000).toFixed(0) + '만' } },
+        yLine:{ position: 'right', grid: { display: false }, min: 0,
+                ticks: { color: tc, font: { size: 10 }, callback: v => (v / 10000).toFixed(0) + '만' } }
       }
     }
   });
-  setLegend('lg-for', [
-    { color: C.navy, label: '중국' }, { color: C.red, label: '베트남', dash: true },
-    { color: C.teal, label: '미국', dash: true }, { color: C.gray, label: '그 외', dash: true }
+  renderRightLegend('lg-for-visa', [
+    { color: 'rgba(180,178,169,0.7)', label: '총등록외국인(막대)' },
+    { color: '#9BBB59', label: '유학(D-2)'     }, { color: '#C0504D', label: '방문취업(H-2)' },
+    { color: '#4F81BD', label: '영주(F-5)'     }, { color: '#8064A2', label: '결혼이민(F-6)' },
+    { color: '#F79646', label: '방문동거(F-1)' }, { color: '#4BACC6', label: '일반연수(D-4)' },
+    { color: '#948A54', label: '거주(F-2)'     },
   ]);
+
+  // ── 3) 국적별 비중 — 총 등록외국인 회색 막대(오른쪽 y축) + 비중 선(왼쪽)
   mkChart('c_for', {
-    type: 'line',
     data: {
       labels: d.foreignNationality.years,
       datasets: [
-        { label: '중국',   data: d.foreignNationality.china,   borderColor: C.navy, tension: 0.3, pointRadius: 3 },
-        { label: '베트남', data: d.foreignNationality.vietnam, borderColor: C.red,  tension: 0.3, pointRadius: 3, borderDash: [4, 3] },
-        { label: '미국',   data: d.foreignNationality.usa,     borderColor: C.teal, tension: 0.3, pointRadius: 3, borderDash: [2, 4] },
-        { label: '그 외',  data: d.foreignNationality.others,  borderColor: C.gray, tension: 0.3, pointRadius: 3, borderDash: [6, 2] },
+        { type: 'bar',  label: '총 등록외국인', data: _forNatTotal,
+          backgroundColor: 'rgba(180,178,169,0.35)', hoverBackgroundColor: 'rgba(180,178,169,0.55)',
+          yAxisID: 'yBar', order: 2, barPercentage: 0.5, categoryPercentage: 0.6 },
+        { type: 'line', label: '중국',   data: d.foreignNationality.china,   borderColor: C.navy, tension: 0.3, pointRadius: 3, yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '베트남', data: d.foreignNationality.vietnam, borderColor: C.red,  tension: 0.3, pointRadius: 3, borderDash: [4, 3], yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '미국',   data: d.foreignNationality.usa,     borderColor: C.teal, tension: 0.3, pointRadius: 3, borderDash: [2, 4], yAxisID: 'yLine', order: 1 },
+        { type: 'line', label: '그 외',  data: d.foreignNationality.others,  borderColor: C.gray, tension: 0.3, pointRadius: 3, borderDash: [6, 2], yAxisID: 'yLine', order: 1 },
       ]
     },
     options: {
-      ...baseOpts,
-      scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } } },
-      plugins: { legend: { display: false } }
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          title: items => items[0].label + '년',
+          label(ctx) {
+            if (ctx.dataset.label === '총 등록외국인') return ` 총 등록외국인: ${ctx.raw.toLocaleString()}명`;
+            return ` ${ctx.dataset.label}: ${ctx.raw}%`;
+          }
+        }}
+      },
+      scales: {
+        x:    { grid: { color: gc }, ticks: { color: tc, font: { size: 11 } } },
+        yLine:{ position: 'left',  grid: { color: gc }, min: 0, max: 85,
+                ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } },
+        yBar: { position: 'right', grid: { display: false },
+                ticks: { color: tc, font: { size: 10 }, callback: v => (v / 10000).toFixed(0) + '만' } }
+      }
     }
   });
+  renderRightLegend('lg-for', [
+    { color: 'rgba(180,178,169,0.7)', label: '총등록외국인(막대)' },
+    { color: C.navy, label: '중국'   }, { color: C.red,  label: '베트남', dash: true },
+    { color: C.teal, label: '미국',   dash: true }, { color: C.gray, label: '그 외', dash: true },
+  ]);
 }
 
 // ══════════════════════════════════════════════
