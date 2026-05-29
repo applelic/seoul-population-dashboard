@@ -393,11 +393,21 @@ function initS3() {
 
   // 1인가구 연령별 시계열
   const sd = d.singleHHAgeTrend;
-  setLegend('lg-1page', [
-    { color: '#B5D4F4', label: '24세이하' }, { color: C.navy,  label: '25~34세' },
-    { color: C.teal,   label: '35~44세'  }, { color: C.amber, label: '45~54세' },
-    { color: C.pink,   label: '55~64세'  }, { color: C.red,   label: '65세이상' },
-  ]);
+  // 범례 오른쪽 세로 배치
+  (function() {
+    const el = document.getElementById('lg-1page');
+    if (!el) return;
+    const items = [
+      { color: '#B5D4F4', label: '24세이하' }, { color: '#185FA5', label: '25~34세' },
+      { color: '#1D9E75', label: '35~44세'  }, { color: '#EF9F27', label: '45~54세' },
+      { color: '#D4537E', label: '55~64세'  }, { color: '#D85A30', label: '65세이상' },
+    ];
+    el.innerHTML = items.map(i =>
+      '<span style="display:flex;align-items:center;gap:5px;white-space:nowrap;">' +
+      '<span style="width:10px;height:10px;border-radius:2px;background:' + i.color + ';flex-shrink:0;"></span>' +
+      i.label + '</span>'
+    ).join('');
+  })();
   mkChart('c_1page', {
     type: 'bar',
     data: {
@@ -415,7 +425,7 @@ function initS3() {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index' },
       plugins: {
-        legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } },
+        legend: { display: false },
         tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명` } }
       },
       scales: {
@@ -469,7 +479,7 @@ function renderDistrict1pChart() {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index' },
       plugins: {
-        legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } },
+        legend: { display: false },
         tooltip: {
           callbacks: {
             label:  ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명`,
@@ -483,6 +493,21 @@ function renderDistrict1pChart() {
       }
     }
   });
+  // 자치구 차트 범례 오른쪽 세로 배치
+  (function() {
+    const el = document.getElementById('lg-district-1p');
+    if (!el) return;
+    const items = [
+      { color: '#B5D4F4', label: '24세이하' }, { color: '#185FA5', label: '25~34세' },
+      { color: '#1D9E75', label: '35~44세'  }, { color: '#EF9F27', label: '45~54세' },
+      { color: '#D4537E', label: '55~64세'  }, { color: '#D85A30', label: '65세이상' },
+    ];
+    el.innerHTML = items.map(i =>
+      '<span style="display:flex;align-items:center;gap:5px;white-space:nowrap;">' +
+      '<span style="width:10px;height:10px;border-radius:2px;background:' + i.color + ';flex-shrink:0;"></span>' +
+      i.label + '</span>'
+    ).join('');
+  })();
 }
 
 // ══════════════════════════════════════════════
