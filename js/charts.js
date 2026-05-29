@@ -73,13 +73,13 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
     labs.push(MONTHS[i]);
     cur.push(v);
     prev.push(py[i]);
-    diff.push(v !== null && py[i] !== null ? v - py[i] : null);
+    diff.push(v !== null && py[i] !== null ? Math.round((v - py[i]) / py[i] * 1000) / 10 : null);
   });
   const pos = diff.filter(d => d !== null && d > 0).length;
   setLegend(lgId, [
     { color: c2, label: prevYear + '년(전년)' },
     { color: c1, label: curYear + '년' },
-    { color: C.gray, label: '증감(명)', dash: true }
+    { color: C.gray, label: '증감율(%)', dash: true }
   ]);
   document.getElementById(noteId).innerHTML =
     `${curYear}년 ${labs.length}개월 중 <strong>${pos}개월</strong> 전년동월 대비 증가.`;
@@ -104,7 +104,7 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
       scales: {
         x: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, autoSkip: false, maxRotation: 35 } },
         y: { position: 'left', grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, callback: v => v.toLocaleString() } },
-        y1: { position: 'right', grid: { display: false }, ticks: { color: tc, font: { size: 10 }, callback: v => (v >= 0 ? '+' : '') + v.toLocaleString() } }
+        y1: { position: 'right', grid: { display: false }, ticks: { color: tc, font: { size: 10 }, callback: v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%' } }
       }
     }
   });
