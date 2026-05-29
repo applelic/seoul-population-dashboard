@@ -126,7 +126,7 @@ function initS1() {
     options: {
       ...baseOpts,
       scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } } },
-      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
+      plugins: { legend: { display: false } }
     }
   });
   setLegend('lg-age', [{ color: C.navy, label: '유소년' }, { color: C.teal, label: '생산연령' }, { color: C.red, label: '고령' }]);
@@ -733,7 +733,7 @@ function initS6() {
     options: {
       ...baseOpts,
       scales: { x: { ...baseOpts.scales.x, ticks: { color: tc, font: { size: 10 }, maxRotation: 35 } }, y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } } },
-      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } } }
+      plugins: { legend: { display: true, position: 'right', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } } }
     }
   });
   setLegend('lg-hhp', [{ color: C.navy, label: '1인' }, { color: C.teal, label: '2인', dash: true }, { color: C.gray, label: '3인이상', dash: true }]);
@@ -750,7 +750,7 @@ function initS6() {
     options: {
       ...baseOpts,
       scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } } },
-      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } } }
+      plugins: { legend: { display: true, position: 'right', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } } }
     }
   });
 }
@@ -782,7 +782,7 @@ function initS7() {
         x: { stacked: true, grid: { color: gc }, ticks: { color: tc, font: { size: 11 } } },
         y: { stacked: true, grid: { color: gc }, min: 900, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } }
       },
-      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
+      plugins: { legend: { display: false } }
     }
   });
   setLegend('lg-living-for', [
@@ -802,7 +802,7 @@ function initS7() {
     options: {
       ...baseOpts,
       scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } } },
-      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
+      plugins: { legend: { display: true, position: 'right', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
     }
   });
   setLegend('lg-capital', [
@@ -826,7 +826,7 @@ function initS7() {
         y:  { position: 'left',  grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, callback: v => (v / 10000).toFixed(0) + '만' } },
         y1: { position: 'right', grid: { display: false }, ticks: { color: tc, font: { size: 10 }, callback: v => v.toLocaleString() } }
       },
-      plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
+      plugins: { legend: { display: false } }
     }
   });
 }
