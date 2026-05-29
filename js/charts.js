@@ -340,19 +340,29 @@ function drawHouseholdChart() {
     });
   }
 
-  // 범례 업데이트
+  // 범례 업데이트 (오른쪽 세로 배치)
   const lgEl = document.getElementById('lg-household');
   if (!lgEl) return;
-  const hhItems = [
-    { color: 'rgba(180,178,169,0.7)', label: '총가구(막대)' },
-    { color: '#185FA5', label: hhTab === 'hh' ? '1인' : '2세대' },
-    { color: hhTab === 'hh' ? '#1D9E75' : '#185FA5', label: hhTab === 'hh' ? '2인' : '1인' },
-    { color: hhTab === 'hh' ? '#888780' : '#1D9E75', label: hhTab === 'hh' ? '3인' : '1세대' },
-    { color: hhTab === 'hh' ? '#BA7517' : '#888780', label: hhTab === 'hh' ? '4인' : '3세대' },
-    ...(hhTab === 'hh' ? [{ color: '#D85A30', label: '5인이상' }] : []),
-  ];
+  const hhItems = hhTab === 'hh'
+    ? [
+        { color: 'rgba(180,178,169,0.8)', label: '총가구(막대)' },
+        { color: '#185FA5', label: '1인' },
+        { color: '#1D9E75', label: '2인' },
+        { color: '#888780', label: '3인' },
+        { color: '#BA7517', label: '4인' },
+        { color: '#D85A30', label: '5인이상' },
+      ]
+    : [
+        { color: 'rgba(180,178,169,0.8)', label: '총가구(막대)' },
+        { color: '#D85A30', label: '2세대' },
+        { color: '#185FA5', label: '1인' },
+        { color: '#1D9E75', label: '1세대' },
+        { color: '#888780', label: '3세대' },
+      ];
   lgEl.innerHTML = hhItems.map(i =>
-    `<span><span class="legend-dot" style="background:${i.color}"></span>${i.label}</span>`
+    '<span style="display:flex;align-items:center;gap:5px;white-space:nowrap;">' +
+    '<span style="width:10px;height:10px;border-radius:2px;background:' + i.color + ';flex-shrink:0;"></span>' +
+    i.label + '</span>'
   ).join('');
 }
 
