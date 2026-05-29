@@ -77,8 +77,8 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
   });
   const pos = diff.filter(d => d !== null && d > 0).length;
   setLegend(lgId, [
-    { color: c1, label: curYear + '년' },
     { color: c2, label: prevYear + '년(전년)' },
+    { color: c1, label: curYear + '년' },
     { color: C.gray, label: '증감(명)', dash: true }
   ]);
   document.getElementById(noteId).innerHTML =
@@ -88,8 +88,8 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
     data: {
       labels: labs,
       datasets: [
-        { type: 'bar', data: cur, backgroundColor: c1 + 'cc', yAxisID: 'y', order: 2 },
         { type: 'bar', data: prev, backgroundColor: c2 + '88', yAxisID: 'y', order: 3 },
+        { type: 'bar', data: cur, backgroundColor: c1 + 'cc', yAxisID: 'y', order: 2 },
         {
           type: 'line', data: diff,
           borderColor: C.gray, backgroundColor: 'transparent',
@@ -222,15 +222,15 @@ function initS2() {
   ], 'setBirthRegion');
   drawBirthChart('seoul');
   buildToggle('tg-birth', [
-    { label: '2024 vs 2023', value: '2024' },
-    { label: '2025 vs 2024', value: '2025' },
-    { label: '2026 vs 2025', value: '2026' },
+    { label: '2024년', value: '2024' },
+    { label: '2025년', value: '2025' },
+    { label: '2026년', value: '2026' },
   ], 'setBirthYear');
   buildMonthCombo('c_bmonth', 'lg-bmonth', 'note-bmonth', d.birthMonthly, '2024', '2023', C.navy, '#85B7EB');
   buildToggle('tg-marry', [
-    { label: '2024 vs 2023', value: '2024' },
-    { label: '2025 vs 2024', value: '2025' },
-    { label: '2026 vs 2025', value: '2026' },
+    { label: '2024년', value: '2024' },
+    { label: '2025년', value: '2025' },
+    { label: '2026년', value: '2026' },
   ], 'setMarryYear');
   buildMonthCombo('c_mmonth', 'lg-mmonth', 'note-mmonth', d.marryMonthly, '2024', '2023', C.purple, '#AFA9EC');
   setLegend('lg-marry', [{ color: C.navy, label: '혼인' }, { color: C.gray, label: '이혼', dash: true }]);
