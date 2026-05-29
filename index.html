@@ -105,8 +105,12 @@
         <div class="chart-card full">
           <div class="chart-title">가구 구조 추이</div>
           <div class="toggle-row" id="tg-household"></div>
-          <div class="legend" id="lg-household"></div>
-          <div class="chart-wrap h260"><canvas id="c_household"></canvas></div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="flex:1;min-width:0;">
+              <div class="chart-wrap h260"><canvas id="c_household"></canvas></div>
+            </div>
+            <div id="lg-household" style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:#666;padding-top:4px;min-width:80px;flex-shrink:0;"></div>
+          </div>
           <div class="chart-note">왼쪽 축: 총가구수(만 가구) · 오른쪽 축: 각 유형 비중(%) · 자료: 인구총조사(국가데이터처)</div>
         </div>
         <div class="chart-row">
