@@ -14,9 +14,9 @@ const baseOpts = {
 };
 
 const C = {
-  blue:  '#378ADD', amber: '#EF9F27', teal: '#1D9E75',
-  pink:  '#D4537E', gray: '#888780',  red: '#D85A30',
-  navy:  '#185FA5', purple: '#7F77DD',
+  blue: '#378ADD', amber: '#EF9F27', teal: '#1D9E75',
+  pink: '#D4537E', gray: '#888780',  red: '#D85A30',
+  navy: '#185FA5', purple: '#7F77DD',
 };
 
 function mkChart(id, cfg) {
@@ -68,15 +68,8 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
   const cy = dataObj[parseInt(curYear)];
   const py = dataObj[parseInt(prevYear)];
   const labs = [], cur = [], prev = [];
-  cy.forEach((v, i) => {
-    labs.push(MONTHS[i]);
-    cur.push(v);
-    prev.push(py[i]);
-  });
-  setLegend(lgId, [
-    { color: c2, label: prevYear + '년(전년)' },
-    { color: c1, label: curYear + '년' },
-  ]);
+  cy.forEach((v, i) => { labs.push(MONTHS[i]); cur.push(v); prev.push(py[i]); });
+  setLegend(lgId, [{ color: c2, label: prevYear + '년(전년)' }, { color: c1, label: curYear + '년' }]);
   document.getElementById(noteId).innerHTML = '';
   mkChart(canvasId, {
     type: 'bar',
@@ -103,7 +96,6 @@ function buildMonthCombo(canvasId, lgId, noteId, dataObj, curYear, prevYear, c1,
 function initS1() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s1', d.kpi.s1);
-
   setLegend('lg-pop', [
     { color: C.navy + '99', label: '총인구(인구총조사)' },
     { color: C.blue + '99', label: '등록인구' },
@@ -121,14 +113,10 @@ function initS1() {
     },
     options: {
       ...baseOpts,
-      scales: {
-        x: baseOpts.scales.x,
-        y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } }
-      },
+      scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } } },
       plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
     }
   });
-
   setLegend('lg-age', [{ color: C.navy, label: '유소년' }, { color: C.teal, label: '생산연령' }, { color: C.red, label: '고령' }]);
   mkChart('c_age', {
     type: 'bar',
@@ -137,25 +125,23 @@ function initS1() {
       datasets: [
         { label: '유소년',   data: d.ageStructure.youth,   backgroundColor: C.navy },
         { label: '생산연령', data: d.ageStructure.working, backgroundColor: C.teal },
-        { label: '고령',     data: d.ageStructure.elderly, backgroundColor: C.red  },
+        { label: '고령',     data: d.ageStructure.elderly, backgroundColor: C.red },
       ]
     },
     options: { ...baseOpts, scales: { x: { ...baseOpts.scales.x, stacked: true }, y: { ...baseOpts.scales.y, stacked: true, max: 100, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } } } }
   });
-
   setLegend('lg-sex', [{ color: C.purple, label: '서울 20대' }, { color: '#B4B2A9', label: '서울 전체', dash: true }]);
   mkChart('c_sex', {
     type: 'line',
     data: {
       labels: d.sexRatio20s.years,
       datasets: [
-        { data: d.sexRatio20s.seoul20s, borderColor: C.purple,   tension: 0.3, pointRadius: 3 },
+        { data: d.sexRatio20s.seoul20s, borderColor: C.purple,  tension: 0.3, pointRadius: 3 },
         { data: d.sexRatio20s.seoulAll, borderColor: '#B4B2A9', tension: 0.3, pointRadius: 3, borderDash: [4, 3] }
       ]
     },
     options: { ...baseOpts, scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, min: 85 } } }
   });
-
   renderDistrictChart();
   renderForeignRatioChart();
   document.getElementById('districtSort').addEventListener('change', renderDistrictChart);
@@ -164,7 +150,9 @@ function initS1() {
 // ══════════════════════════════════════════════
 // S2: 출생·혼인 동향
 // ══════════════════════════════════════════════
+let birthRegion = 'seoul';
 function drawBirthChart(region) {
+  birthRegion = region;
   const d = DASHBOARD_DATA;
   const births = region === 'seoul' ? d.birthAnnual.seoul : d.birthAnnual.national;
   const tfr    = region === 'seoul' ? d.fertilityRate.seoul : d.fertilityRate.national;
@@ -198,22 +186,11 @@ function drawBirthChart(region) {
 function initS2() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s2', d.kpi.s2);
-  buildToggle('tg-birth-region', [
-    { label: '서울', value: 'seoul' },
-    { label: '전국', value: 'national' },
-  ], 'setBirthRegion');
+  buildToggle('tg-birth-region', [{ label: '서울', value: 'seoul' }, { label: '전국', value: 'national' }], 'setBirthRegion');
   drawBirthChart('seoul');
-  buildToggle('tg-birth', [
-    { label: '2024년', value: '2024' },
-    { label: '2025년', value: '2025' },
-    { label: '2026년', value: '2026' },
-  ], 'setBirthYear');
+  buildToggle('tg-birth', [{ label: '2024년', value: '2024' }, { label: '2025년', value: '2025' }, { label: '2026년', value: '2026' }], 'setBirthYear');
   buildMonthCombo('c_bmonth', 'lg-bmonth', 'note-bmonth', d.birthMonthly, '2024', '2023', C.navy, '#85B7EB');
-  buildToggle('tg-marry', [
-    { label: '2024년', value: '2024' },
-    { label: '2025년', value: '2025' },
-    { label: '2026년', value: '2026' },
-  ], 'setMarryYear');
+  buildToggle('tg-marry', [{ label: '2024년', value: '2024' }, { label: '2025년', value: '2025' }, { label: '2026년', value: '2026' }], 'setMarryYear');
   buildMonthCombo('c_mmonth', 'lg-mmonth', 'note-mmonth', d.marryMonthly, '2024', '2023', C.purple, '#AFA9EC');
   setLegend('lg-marry', [{ color: C.navy, label: '혼인' }, { color: C.gray, label: '이혼', dash: true }]);
   mkChart('c_marry', {
@@ -221,7 +198,7 @@ function initS2() {
     data: {
       labels: d.marryAnnual.years,
       datasets: [
-        { data: d.marryAnnual.values,  borderColor: C.navy, tension: 0.3, pointRadius: 3 },
+        { data: d.marryAnnual.values,   borderColor: C.navy, tension: 0.3, pointRadius: 3 },
         { data: d.divorceAnnual.values, borderColor: C.gray, tension: 0.3, pointRadius: 3, borderDash: [4, 3] }
       ]
     },
@@ -230,11 +207,11 @@ function initS2() {
 }
 
 // ══════════════════════════════════════════════
-// S3: 가구 구조  ★ 툴팁 수정 핵심 구간
+// S3: 가구 구조  ★ 핵심 변경 구간
 // ══════════════════════════════════════════════
 
-// 가구원수별 가구수 원시값 (householdSize.years 순서 동일)
-// years: [1990, 1995, 2000, 2005, 2010, 2015, 2022, 2023, 2024]
+// 가구원수별 원시 가구수 룩업 (householdSize.years 순서와 동일)
+// [1990, 1995, 2000, 2005, 2010, 2015, 2022, 2023, 2024]
 const _hhRaw = {
   '1인':    [ 257382,  382024,  502245,  675739,  854606, 1115744, 1564187, 1627480, 1660813],
   '2인':    [ 330684,  426210,  524663,  670455,  781527,  930467, 1076409, 1080790, 1090555],
@@ -242,98 +219,169 @@ const _hhRaw = {
   '4인':    [ 914443,  996854,  989621,  917243,  807836,  701945,  544807,  528911,  511523],
   '5인이상':[ 775148,  545579,  398869,  314410,  272213,  218894,  136936,  130455,  123638],
 };
+// 총가구수 (만 단위, householdSize.years 순서와 동일)
+const _hhTotal = [281, 297, 309, 331, 350, 378, 410, 414, 416];
 
-// 세대구성별 가구수 원시값 (singleHH1p.years 순서 동일)
-// years: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+// 세대구성별 원시 가구수 룩업 (singleHH1p.years 순서와 동일)
+// [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 const _genRaw = {
   '2세대': [1804454, 1775431, 1740777, 1710502, 1691450, 1644223, 1611980, 1593557, 1573061],
   '1인':   [1138860, 1180540, 1229421, 1299787, 1390701, 1489893, 1564187, 1627480, 1660813],
   '1세대': [ 598233,  614037,  626988,  645266,  665193,  680825,  689093,  685396,  687649],
   '3세대': [ 181625,  173908,  164734,  155420,  142292,  131646,  125014,  121065,  116025],
 };
+// 세대구성별 총가구수 (만 단위)
+const _genTotal = [378, 381, 384, 390, 398, 405, 410, 414, 416];
 
-let hhMode = 'bar';
+// 가구 탭 상태
+let hhTab = 'hh'; // 'hh' | 'gen'
 
-function drawHH() {
-  const d = DASHBOARD_DATA.householdSize;
-
-  if (hhMode === 'bar') {
-    mkChart('c_hh', {
-      type: 'bar',
+function drawHouseholdChart() {
+  if (hhTab === 'hh') {
+    const d = DASHBOARD_DATA.householdSize;
+    mkChart('c_household', {
       data: {
-        labels: ['1인', '2인', '3인', '4인', '5인이상'],
+        labels: d.years.map(String),
         datasets: [
-          { label: '1990', data: [9.1, 11.7, 19.1, 32.5, 27.6], backgroundColor: 'rgba(24,95,165,0.3)' },
-          { label: '2000', data: [16.3, 17.0, 21.7, 32.1, 13.0], backgroundColor: 'rgba(24,95,165,0.5)' },
-          { label: '2010', data: [24.4, 22.3, 22.5, 23.1,  7.8], backgroundColor: 'rgba(24,95,165,0.7)' },
-          { label: '2024', data: [39.9, 26.2, 18.6, 12.3,  3.0], backgroundColor: '#185FA5' },
+          // 총가구수 막대 (왼쪽 y축, 연한 회색)
+          {
+            type: 'bar',
+            label: '총가구',
+            data: _hhTotal,
+            backgroundColor: 'rgba(180,178,169,0.35)',
+            hoverBackgroundColor: 'rgba(180,178,169,0.55)',
+            yAxisID: 'yBar',
+            order: 2,
+            barPercentage: 0.7,
+            categoryPercentage: 0.75,
+          },
+          // 비중 선 (오른쪽 y축)
+          { type: 'line', label: '1인',    data: d.h1,     borderColor: '#185FA5', backgroundColor: '#185FA5', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1 },
+          { type: 'line', label: '2인',    data: d.h2,     borderColor: '#1D9E75', backgroundColor: '#1D9E75', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1, borderDash: [5, 3] },
+          { type: 'line', label: '3인',    data: d.h3,     borderColor: '#888780', backgroundColor: '#888780', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1, borderDash: [2, 4] },
+          { type: 'line', label: '4인',    data: d.h4,     borderColor: '#BA7517', backgroundColor: '#BA7517', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1, borderDash: [6, 2] },
+          { type: 'line', label: '5인이상', data: d.h5plus, borderColor: '#D85A30', backgroundColor: '#D85A30', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1, borderDash: [4, 4] },
         ]
       },
       options: {
-        ...baseOpts,
-        scales: {
-          x: baseOpts.scales.x,
-          y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } }
-        },
-        plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
-      }
-    });
-  } else {
-    mkChart('c_hh', {
-      type: 'line',
-      data: {
-        labels: d.years,
-        datasets: [
-          { label: '1인',    data: d.h1,     borderColor: '#185FA5', tension: 0.3, pointRadius: 3 },
-          { label: '2인',    data: d.h2,     borderColor: '#1D9E75', tension: 0.3, pointRadius: 3, borderDash: [4, 3] },
-          { label: '3인',    data: d.h3,     borderColor: '#888780', tension: 0.3, pointRadius: 3, borderDash: [2, 4] },
-          { label: '4인',    data: d.h4,     borderColor: '#BA7517', tension: 0.3, pointRadius: 3, borderDash: [6, 2] },
-          { label: '5인이상', data: d.h5plus, borderColor: '#D85A30', tension: 0.3, pointRadius: 3, borderDash: [4, 4] },
-        ]
-      },
-      options: {
-        ...baseOpts,
+        responsive: true, maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
-        scales: {
-          x: baseOpts.scales.x,
-          y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } }
-        },
         plugins: {
-          legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } },
+          legend: { display: false },
           tooltip: {
             callbacks: {
+              title: items => items[0].label + '년',
               label(ctx) {
-                const lbl    = ctx.dataset.label || '';
-                const pct    = ctx.parsed.y;
-                const counts = _hhRaw[lbl];
-                if (counts) {
-                  return ` ${lbl}: ${counts[ctx.dataIndex].toLocaleString()}가구 (${pct}%)`;
-                }
-                return ` ${lbl}: ${pct}%`;
+                const lbl = ctx.dataset.label;
+                if (lbl === '총가구') return ` 총가구: ${ctx.raw}만 가구`;
+                const n = _hhRaw[lbl]?.[ctx.dataIndex];
+                return n !== undefined
+                  ? ` ${lbl}: ${n.toLocaleString()}가구 (${ctx.raw}%)`
+                  : ` ${lbl}: ${ctx.raw}%`;
               }
             }
           }
+        },
+        scales: {
+          x: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, maxRotation: 0 } },
+          yBar:  { position: 'left',  grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, callback: v => v + '만' }, title: { display: false } },
+          yLine: { position: 'right', grid: { display: false }, min: 0, max: 55, ticks: { color: tc, font: { size: 10 }, callback: v => v + '%' } }
+        }
+      }
+    });
+  } else {
+    const d = DASHBOARD_DATA.singleHH1p;
+    mkChart('c_household', {
+      data: {
+        labels: d.years.map(String),
+        datasets: [
+          {
+            type: 'bar',
+            label: '총가구',
+            data: _genTotal,
+            backgroundColor: 'rgba(180,178,169,0.35)',
+            hoverBackgroundColor: 'rgba(180,178,169,0.55)',
+            yAxisID: 'yBar',
+            order: 2,
+            barPercentage: 0.7,
+            categoryPercentage: 0.75,
+          },
+          { type: 'line', label: '2세대', data: d.gen2,    borderColor: '#D85A30', backgroundColor: '#D85A30', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1 },
+          { type: 'line', label: '1인',   data: d.single1p, borderColor: '#185FA5', backgroundColor: '#185FA5', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1, borderDash: [5, 3] },
+          { type: 'line', label: '1세대', data: d.gen1,    borderColor: '#1D9E75', backgroundColor: '#1D9E75', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1, borderDash: [2, 4] },
+          { type: 'line', label: '3세대', data: d.gen3,    borderColor: '#888780', backgroundColor: '#888780', pointRadius: 4, tension: 0.3, yAxisID: 'yLine', order: 1, borderDash: [6, 2] },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: items => items[0].label + '년',
+              label(ctx) {
+                const lbl = ctx.dataset.label;
+                if (lbl === '총가구') return ` 총가구: ${ctx.raw}만 가구`;
+                const n = _genRaw[lbl]?.[ctx.dataIndex];
+                return n !== undefined
+                  ? ` ${lbl}: ${n.toLocaleString()}가구 (${ctx.raw}%)`
+                  : ` ${lbl}: ${ctx.raw}%`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: gc }, ticks: { color: tc, font: { size: 11 }, maxRotation: 0 } },
+          yBar:  { position: 'left',  grid: { color: gc }, ticks: { color: tc, font: { size: 10 }, callback: v => v + '만' } },
+          yLine: { position: 'right', grid: { display: false }, min: 0, max: 55, ticks: { color: tc, font: { size: 10 }, callback: v => v + '%' } }
         }
       }
     });
   }
+
+  // 범례 업데이트
+  const lgEl = document.getElementById('lg-household');
+  if (!lgEl) return;
+  const hhItems = [
+    { color: 'rgba(180,178,169,0.7)', label: '총가구(막대)' },
+    { color: '#185FA5', label: hhTab === 'hh' ? '1인' : '2세대' },
+    { color: hhTab === 'hh' ? '#1D9E75' : '#185FA5', label: hhTab === 'hh' ? '2인' : '1인' },
+    { color: hhTab === 'hh' ? '#888780' : '#1D9E75', label: hhTab === 'hh' ? '3인' : '1세대' },
+    { color: hhTab === 'hh' ? '#BA7517' : '#888780', label: hhTab === 'hh' ? '4인' : '3세대' },
+    ...(hhTab === 'hh' ? [{ color: '#D85A30', label: '5인이상' }] : []),
+  ];
+  lgEl.innerHTML = hhItems.map(i =>
+    `<span><span class="legend-dot" style="background:${i.color}"></span>${i.label}</span>`
+  ).join('');
+}
+
+function switchHHTab(tab) {
+  hhTab = tab;
+  document.querySelectorAll('#tg-household .toggle-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && tab === 'hh') || (i === 1 && tab === 'gen'));
+  });
+  drawHouseholdChart();
 }
 
 function initS3() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s3', d.kpi.s3);
 
-  buildToggle('tg-hh', [
-    { label: '시점 비교', value: 'bar' },
-    { label: '추세선',   value: 'line' },
-  ], 'setHHMode');
-  setLegend('lg-hh', [
-    { color: C.blue,  label: '1인' },    { color: C.amber, label: '2인' },
-    { color: C.teal,  label: '3인' },    { color: C.pink,  label: '4인' },
-    { color: C.gray,  label: '5인이상' },
-  ]);
-  drawHH();
+  // 탭 토글 빌드
+  const tgEl = document.getElementById('tg-household');
+  if (tgEl) {
+    tgEl.innerHTML = `
+      <button class="toggle-btn active" onclick="switchHHTab('hh')">가구원수별</button>
+      <button class="toggle-btn" onclick="switchHHTab('gen')">세대구성별</button>
+    `;
+  }
 
+  // 첫 렌더
+  hhTab = 'hh';
+  drawHouseholdChart();
+
+  // 1인가구 연령별 구성 도넛
   mkChart('c_1ph', {
     type: 'doughnut',
     data: {
@@ -343,47 +391,7 @@ function initS3() {
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'right', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 5 } } } }
   });
 
-  setLegend('lg-gen', [
-    { color: C.amber, label: '2세대' }, { color: C.blue,  label: '1인' },
-    { color: C.teal,  label: '1세대' }, { color: C.pink,  label: '3세대' }
-  ]);
-  mkChart('c_gen', {
-    type: 'line',
-    data: {
-      labels: d.singleHH1p.years,
-      datasets: [
-        { label: '2세대', data: d.singleHH1p.gen2,    borderColor: C.amber, borderWidth: 2.5, tension: 0.3, pointRadius: 3 },
-        { label: '1인',   data: d.singleHH1p.single1p, borderColor: C.blue,  borderWidth: 3,   tension: 0.3, pointRadius: 3 },
-        { label: '1세대', data: d.singleHH1p.gen1,    borderColor: C.teal,  borderWidth: 2,   tension: 0.3, pointRadius: 3 },
-        { label: '3세대', data: d.singleHH1p.gen3,    borderColor: C.pink,  borderWidth: 1.5, tension: 0.3, pointRadius: 3 },
-      ]
-    },
-    options: {
-      ...baseOpts,
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: baseOpts.scales.x,
-        y: { ...baseOpts.scales.y, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } }
-      },
-      plugins: {
-        legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 6 } },
-        tooltip: {
-          callbacks: {
-            label(ctx) {
-              const lbl    = ctx.dataset.label || '';
-              const pct    = ctx.parsed.y;
-              const counts = _genRaw[lbl];
-              if (counts) {
-                return ` ${lbl}: ${counts[ctx.dataIndex].toLocaleString()}가구 (${pct}%)`;
-              }
-              return ` ${lbl}: ${pct}%`;
-            }
-          }
-        }
-      }
-    }
-  });
-
+  // 1인가구 연령별 시계열
   const sd = d.singleHHAgeTrend;
   setLegend('lg-1page', [
     { color: '#B5D4F4', label: '24세이하' }, { color: C.navy,  label: '25~34세' },
@@ -437,14 +445,12 @@ function renderDistrict1pChart() {
       zones.forEach(z => {
         const x0 = x.getPixelForValue(z.from) - x.width / x.ticks.length / 2;
         const x1 = x.getPixelForValue(z.to)   + x.width / x.ticks.length / 2;
-        ctx.save();
-        ctx.fillStyle = z.color;
+        ctx.save(); ctx.fillStyle = z.color;
         ctx.fillRect(x0, top, x1 - x0, bottom - top);
         ctx.restore();
       });
     }
   };
-
   mkChart('c_district_1p', {
     type: 'bar',
     data: {
@@ -517,7 +523,6 @@ function initS4() {
 function initS5() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s5', d.kpi.s5);
-
   mkChart('c_for_type', {
     type: 'bar',
     data: {
@@ -533,8 +538,7 @@ function initS5() {
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index' },
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index' },
       plugins: {
         legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } },
         tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명`, footer: items => `합계: ${items.reduce((s, i) => s + (i.raw || 0), 0).toLocaleString()}명` } }
@@ -545,7 +549,6 @@ function initS5() {
       }
     }
   });
-
   mkChart('c_for_visa', {
     type: 'line',
     data: {
@@ -561,8 +564,7 @@ function initS5() {
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index' },
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index' },
       plugins: {
         legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } },
         tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toLocaleString()}명` } }
@@ -573,12 +575,9 @@ function initS5() {
       }
     }
   });
-
   setLegend('lg-for', [
-    { color: C.navy, label: '중국' },
-    { color: C.red,  label: '베트남', dash: true },
-    { color: C.teal, label: '미국',   dash: true },
-    { color: C.gray, label: '그 외',  dash: true }
+    { color: C.navy, label: '중국' }, { color: C.red, label: '베트남', dash: true },
+    { color: C.teal, label: '미국', dash: true }, { color: C.gray, label: '그 외', dash: true }
   ]);
   mkChart('c_for', {
     type: 'line',
@@ -619,7 +618,7 @@ function initS6() {
     options: {
       ...baseOpts,
       scales: {
-        x:  baseOpts.scales.x,
+        x: baseOpts.scales.x,
         y:  { position: 'left',  grid: { color: gc }, min: 700, ticks: { color: tc, font: { size: 11 }, callback: v => v + '만' } },
         y1: { position: 'right', min: 0, max: 60, grid: { display: false }, ticks: { color: tc, font: { size: 11 }, callback: v => v + '%' } }
       }
@@ -667,10 +666,8 @@ function initS6() {
 function initS7() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s7', d.kpi.s7);
-
   setLegend('lg-living', [
-    { color: C.navy + '99', label: '내국인' },
-    { color: C.teal + '99', label: '외국인' },
+    { color: C.navy + '99', label: '내국인' }, { color: C.teal + '99', label: '외국인' },
     { color: C.red, label: '총 생활인구', dash: true },
   ]);
   const lp = d.livingPopulation;
@@ -693,11 +690,9 @@ function initS7() {
       plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
     }
   });
-
   setLegend('lg-living-for', [
-    { color: C.navy,  label: '외국인 전체' },
-    { color: C.amber, label: '장기체류', dash: true },
-    { color: C.red,   label: '단기체류', dash: true },
+    { color: C.navy, label: '외국인 전체' }, { color: C.amber, label: '장기체류', dash: true },
+    { color: C.red,  label: '단기체류', dash: true },
   ]);
   mkChart('c_living_for', {
     type: 'line',
@@ -715,11 +710,8 @@ function initS7() {
       plugins: { legend: { display: true, position: 'bottom', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 8 } } }
     }
   });
-
   setLegend('lg-capital', [
-    { color: C.navy, label: '유입' },
-    { color: C.red,  label: '유출' },
-    { color: C.teal, label: '순이동', dash: true },
+    { color: C.navy, label: '유입' }, { color: C.red, label: '유출' }, { color: C.teal, label: '순이동', dash: true },
   ]);
   const cm = d.capitalMobility;
   mkChart('c_capital', {
@@ -754,7 +746,6 @@ function setBirthYear(yr) {
 function setMarryYear(yr) {
   buildMonthCombo('c_mmonth', 'lg-mmonth', 'note-mmonth', DASHBOARD_DATA.marryMonthly, yr, String(parseInt(yr) - 1), C.purple, '#AFA9EC');
 }
-function setHHMode(mode) { hhMode = mode; drawHH(); }
 
 // ══════════════════════════════════════════════
 // 탭 전환
@@ -825,15 +816,10 @@ function renderForeignRatioChart() {
     type: 'bar',
     data: {
       labels: ratios.map(r => r.name),
-      datasets: [{
-        label: '외국인 비율 (%)',
-        data: ratios.map(r => r.ratio),
-        backgroundColor: ratios.map((_, i) => `hsl(${220 - i * 8}, 70%, ${55 + i * 1.5}%)`),
-      }],
+      datasets: [{ label: '외국인 비율 (%)', data: ratios.map(r => r.ratio), backgroundColor: ratios.map((_, i) => `hsl(${220 - i * 8}, 70%, ${55 + i * 1.5}%)`) }],
     },
     options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
         tooltip: { callbacks: { label: ctx => `외국인 비율: ${ctx.parsed.x}% (${ratios[ctx.dataIndex].count.toLocaleString()}명)` } },
