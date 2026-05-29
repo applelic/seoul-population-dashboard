@@ -391,16 +391,6 @@ function initS3() {
   hhTab = 'hh';
   drawHouseholdChart();
 
-  // 1인가구 연령별 구성 도넛
-  mkChart('c_1ph', {
-    type: 'doughnut',
-    data: {
-      labels: d.singleHHAge2024.labels,
-      datasets: [{ data: d.singleHHAge2024.values, backgroundColor: ['#B5D4F4', C.navy, '#5DCAA5', C.teal, '#FAC775', C.red], borderWidth: 1 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'right', labels: { font: { size: 10 }, color: tc, boxWidth: 10, padding: 5 } } } }
-  });
-
   // 1인가구 연령별 시계열
   const sd = d.singleHHAgeTrend;
   setLegend('lg-1page', [
