@@ -156,6 +156,14 @@ function initS1() {
   });
   renderDistrictChart();
   document.getElementById('districtSort').addEventListener('change', renderDistrictChart);
+
+  // 자치구별 연령대 차트 초기화
+  renderDistrictAgeChart();
+  const ageControls = ['districtAgeYr','districtAgeSort','districtAgeRegion'];
+  ageControls.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', renderDistrictAgeChart);
+  });
 }
 
 // ══════════════════════════════════════════════
@@ -864,6 +872,171 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 window.addEventListener('DOMContentLoaded', () => initS1());
+
+// ══════════════════════════════════════════════
+// 자치구별 연령대별 인구 (권역 구분) — S1 내
+// ══════════════════════════════════════════════
+const _REGION_MAP = {
+  '종로구':'도심권','중구':'도심권','용산구':'도심권',
+  '성동구':'동북권','광진구':'동북권','동대문구':'동북권','중랑구':'동북권',
+  '성북구':'동북권','강북구':'동북권','도봉구':'동북권','노원구':'동북권',
+  '서초구':'동남권','강남구':'동남권','송파구':'동남권','강동구':'동남권',
+  '강서구':'서남권','양천구':'서남권','구로구':'서남권','금천구':'서남권',
+  '영등포구':'서남권','동작구':'서남권','관악구':'서남권',
+  '은평구':'서북권','서대문구':'서북권','마포구':'서북권'
+};
+const _REGION_ORDER = ['도심권','동북권','동남권','서남권','서북권'];
+const _REGION_COLORS = {
+  '도심권':'#7F77DD','동북권':'#E24B4A','동남권':'#EF9F27','서남권':'#1D9E75','서북권':'#378ADD'
+};
+const _GUS_BY_REGION = {
+  '도심권': ['종로구','중구','용산구'],
+  '동북권': ['성동구','광진구','동대문구','중랑구','성북구','강북구','도봉구','노원구'],
+  '동남권': ['서초구','강남구','송파구','강동구'],
+  '서남권': ['강서구','양천구','구로구','금천구','영등포구','동작구','관악구'],
+  '서북권': ['은평구','서대문구','마포구']
+};
+const _AGE_HIDDEN = [false, false, false];
+
+function _pct(v, t) { return Math.round(v / t * 1000) / 10; }
+
+function _getDistrictAgeGuList() {
+  const sort   = document.getElementById('districtAgeSort')?.value   || 'region';
+  const region = document.getElementById('districtAgeRegion')?.value || 'all';
+  const yr     = document.getElementById('districtAgeYr')?.value     || '2025';
+  const d      = DASHBOARD_DATA.districtAge;
+  let gus;
+  if (region !== 'all') {
+    gus = [..._GUS_BY_REGION[region]];
+  } else if (sort === 'region') {
+    gus = _REGION_ORDER.flatMap(r => _GUS_BY_REGION[r]);
+  } else {
+    gus = Object.keys(_REGION_MAP);
+  }
+  if (sort !== 'region') {
+    gus.sort((a, b) => {
+      const da = d[a]?.[yr], db = d[b]?.[yr];
+      if (!da || !db) return 0;
+      if (sort === 'elderly') return db.elderly - da.elderly;
+      if (sort === 'total')   return db.total   - da.total;
+      return a.localeCompare(b, 'ko');
+    });
+  }
+  return gus;
+}
+
+function renderDistrictAgeChart() {
+  const d   = DASHBOARD_DATA.districtAge;
+  const yr  = document.getElementById('districtAgeYr')?.value || '2025';
+  const gus = _getDistrictAgeGuList();
+
+  // 권역 컬러 밴드 업데이트
+  const band = document.getElementById('districtAgeBand');
+  if (band) {
+    const w = 100 / gus.length;
+    band.innerHTML = gus.map(g => {
+      const col = _REGION_COLORS[_REGION_MAP[g]];
+      return `<div style="width:${w}%;border-bottom:3px solid ${col};background:${col}22"></div>`;
+    }).join('');
+  }
+
+  // 범례 active 상태 동기화
+  ['districtAgeLeg0','districtAgeLeg1','districtAgeLeg2'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('da-leg-hidden', _AGE_HIDDEN[i]);
+  });
+
+  mkChart('c_district_age', {
+    type: 'bar',
+    data: {
+      labels: gus,
+      datasets: [
+        {
+          label: '유소년 (0~14세)',
+          data: gus.map(g => d[g]?.[yr]?.youth   || 0),
+          backgroundColor: 'rgba(55,138,221,0.85)',
+          stack: 's',
+          hidden: _AGE_HIDDEN[0]
+        },
+        {
+          label: '생산연령 (15~64세)',
+          data: gus.map(g => d[g]?.[yr]?.working || 0),
+          backgroundColor: 'rgba(29,158,117,0.85)',
+          stack: 's',
+          hidden: _AGE_HIDDEN[1]
+        },
+        {
+          label: '고령 (65세+)',
+          data: gus.map(g => d[g]?.[yr]?.elderly || 0),
+          backgroundColor: 'rgba(216,90,48,0.85)',
+          stack: 's',
+          hidden: _AGE_HIDDEN[2]
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => {
+              const g = gus[items[0].dataIndex];
+              return `${g} · ${_REGION_MAP[g]} (${yr}년)`;
+            },
+            label(ctx) {
+              const g  = gus[ctx.dataIndex];
+              const dd = d[g]?.[yr];
+              if (!dd) return '';
+              const keys  = ['youth', 'working', 'elderly'];
+              const names = ['유소년', '생산연령', '고령'];
+              const k = keys[ctx.datasetIndex];
+              return `${names[ctx.datasetIndex]}: ${dd[k].toLocaleString()}명 (${_pct(dd[k], dd.total)}%)`;
+            },
+            footer: items => {
+              const g  = gus[items[0].dataIndex];
+              const dd = d[g]?.[yr];
+              return dd ? `총인구: ${dd.total.toLocaleString()}명` : '';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { color: gc },
+          ticks: {
+            color: ctx => _REGION_COLORS[_REGION_MAP[gus[ctx.index]]] || tc,
+            font: { size: 11 },
+            autoSkip: false,
+            maxRotation: 45
+          }
+        },
+        y: {
+          stacked: true,
+          grid: { color: gc },
+          ticks: {
+            color: tc,
+            font: { size: 11 },
+            callback: v => v >= 10000 ? Math.round(v / 10000) + '만' : v.toLocaleString()
+          },
+          title: { display: true, text: '인구수 (명)', color: tc, font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+function _toggleDistrictAgeLeg(idx) {
+  _AGE_HIDDEN[idx] = !_AGE_HIDDEN[idx];
+  const el = document.getElementById('districtAgeLeg' + idx);
+  if (el) el.classList.toggle('da-leg-hidden', _AGE_HIDDEN[idx]);
+  if (charts['c_district_age']) {
+    charts['c_district_age'].data.datasets[idx].hidden = _AGE_HIDDEN[idx];
+    charts['c_district_age'].update();
+  }
+}
 
 // ══════════════════════════════════════════════
 // 자치구별 차트 (S1 내)
