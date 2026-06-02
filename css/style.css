@@ -172,3 +172,9 @@ body {
   .chart-row { grid-template-columns: 1fr; }
   .tab-btn { padding: 6px 10px; font-size: 11px; }
 }
+
+/* 자치구 연령대 차트 범례 숨김 상태 */
+.da-leg-hidden {
+  opacity: 0.35 !important;
+  text-decoration: line-through !important;
+}
