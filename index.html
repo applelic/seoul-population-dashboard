@@ -63,6 +63,71 @@
           <div class="chart-note">자료: 주민등록인구(행안부), 등록외국인(법무부) · 2025년 기준</div>
         </div>
 
+        <div class="chart-card full">
+          <div class="chart-title">자치구별 연령대별 인구 현황</div>
+          <div class="toggle-row" style="flex-wrap:wrap;gap:8px;align-items:center;">
+            <label for="districtAgeYr" style="font-size:13px;color:#555;">연도</label>
+            <select id="districtAgeYr" style="font-size:13px;padding:2px 6px;border:1px solid #ddd;border-radius:4px;">
+              <option value="2025" selected>2025년</option>
+              <option value="2024">2024년</option>
+              <option value="2023">2023년</option>
+              <option value="2022">2022년</option>
+              <option value="2021">2021년</option>
+              <option value="2020">2020년</option>
+              <option value="2019">2019년</option>
+              <option value="2018">2018년</option>
+              <option value="2017">2017년</option>
+              <option value="2016">2016년</option>
+              <option value="2015">2015년</option>
+              <option value="2014">2014년</option>
+              <option value="2013">2013년</option>
+              <option value="2012">2012년</option>
+              <option value="2011">2011년</option>
+            </select>
+            <label for="districtAgeSort" style="font-size:13px;color:#555;margin-left:6px;">정렬</label>
+            <select id="districtAgeSort" style="font-size:13px;padding:2px 6px;border:1px solid #ddd;border-radius:4px;">
+              <option value="region">권역순</option>
+              <option value="elderly">고령인구 많은 순</option>
+              <option value="total">총인구 많은 순</option>
+              <option value="alpha">가나다순</option>
+            </select>
+            <label for="districtAgeRegion" style="font-size:13px;color:#555;margin-left:6px;">권역 필터</label>
+            <select id="districtAgeRegion" style="font-size:13px;padding:2px 6px;border:1px solid #ddd;border-radius:4px;">
+              <option value="all">전체</option>
+              <option value="도심권">도심권</option>
+              <option value="동북권">동북권</option>
+              <option value="동남권">동남권</option>
+              <option value="서남권">서남권</option>
+              <option value="서북권">서북권</option>
+            </select>
+          </div>
+          <!-- 클릭 가능한 범례 -->
+          <div style="display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 4px;align-items:center;">
+            <span id="districtAgeLeg0" onclick="_toggleDistrictAgeLeg(0)" style="display:flex;align-items:center;gap:5px;font-size:12px;color:#555;cursor:pointer;padding:3px 8px;border-radius:4px;border:0.5px solid #e0e0e0;user-select:none;">
+              <span style="width:11px;height:11px;border-radius:2px;background:rgba(55,138,221,0.85);flex-shrink:0;"></span>유소년 (0~14세)
+            </span>
+            <span id="districtAgeLeg1" onclick="_toggleDistrictAgeLeg(1)" style="display:flex;align-items:center;gap:5px;font-size:12px;color:#555;cursor:pointer;padding:3px 8px;border-radius:4px;border:0.5px solid #e0e0e0;user-select:none;">
+              <span style="width:11px;height:11px;border-radius:2px;background:rgba(29,158,117,0.85);flex-shrink:0;"></span>생산연령 (15~64세)
+            </span>
+            <span id="districtAgeLeg2" onclick="_toggleDistrictAgeLeg(2)" style="display:flex;align-items:center;gap:5px;font-size:12px;color:#555;cursor:pointer;padding:3px 8px;border-radius:4px;border:0.5px solid #e0e0e0;user-select:none;">
+              <span style="width:11px;height:11px;border-radius:2px;background:rgba(216,90,48,0.85);flex-shrink:0;"></span>고령 (65세+)
+            </span>
+            <span style="width:1px;height:16px;background:#e0e0e0;margin:0 6px;"></span>
+            <span style="font-size:11px;color:#888;display:flex;align-items:center;gap:8px;">
+              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#7F77DD;"></span>도심권</span>
+              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#E24B4A;"></span>동북권</span>
+              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#EF9F27;"></span>동남권</span>
+              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#1D9E75;"></span>서남권</span>
+              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#378ADD;"></span>서북권</span>
+            </span>
+          </div>
+          <!-- 권역 컬러 밴드 -->
+          <div id="districtAgeBand" style="display:flex;margin-bottom:4px;padding-left:40px;"></div>
+          <div class="chart-wrap h320"><canvas id="c_district_age"></canvas></div>
+          <div class="chart-note">X축 구명 색상 = 권역 · 범례 클릭 시 해당 연령대 표시/숨김 · 자료: 행안부 주민등록인구</div>
+        </div>
+
+
       </section>
 
       <!-- ══ S2: 출생·혼인 동향 ══ -->
