@@ -154,8 +154,10 @@ function initS1() {
     },
     options: { ...baseOpts, scales: { x: baseOpts.scales.x, y: { ...baseOpts.scales.y, min: 85 } } }
   });
-  renderDistrictChart();
-  document.getElementById('districtSort').addEventListener('change', renderDistrictChart);
+ renderDistrictChart();
+  ['districtYear', 'districtMetric', 'districtSort'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', renderDistrictChart);
+  });
 
   // 자치구별 연령대 차트 초기화
   renderDistrictAgeChart();
@@ -1042,33 +1044,76 @@ function _toggleDistrictAgeLeg(idx) {
 // 자치구별 차트 (S1 내)
 // ══════════════════════════════════════════════
 function renderDistrictChart() {
-  const d = DASHBOARD_DATA.districtPopulation;
-  const sortKey = document.getElementById('districtSort')?.value || 'registered';
-  const indices = d.districts.map((_, i) => i).sort((a, b) => d[sortKey][b] - d[sortKey][a]);
-  const labels     = indices.map(i => d.districts[i]);
-  const registered = indices.map(i => d.registered[i]);
-  const residents  = indices.map(i => d.residents[i]);
-  const foreigners = indices.map(i => d.foreigners[i]);
-  mkChart('c_district', {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: '주민등록인구',   data: residents,  backgroundColor: 'rgba(37,99,235,0.75)', order: 2 },
-        { label: '등록외국인',     data: foreigners, backgroundColor: 'rgba(239,68,68,0.75)',  order: 1 },
-        { label: '등록인구(합계)', data: registered, type: 'line', borderColor: '#f59e0b', backgroundColor: 'transparent', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, order: 0 },
-      ],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'top' },
-        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
+  const year   = document.getElementById('districtYear')?.value   || '2025';
+  const metric = document.getElementById('districtMetric')?.value || 'registered';
+  const sort   = document.getElementById('districtSort')?.value   || 'desc';
+
+  const dp = DASHBOARD_DATA.districtPopByYear[year];
+  if (!dp) return;
+
+  const metricLabel = {
+    registered: '등록인구(합계)',
+    residents:  '주민등록인구',
+    foreigners: '등록외국인',
+  };
+
+  // 제목 업데이트
+  const titleEl = document.getElementById('districtChartTitle');
+  const displayYear = year === '2026(1Q)' ? '2026 1분기' : year;
+  if (titleEl) titleEl.textContent = displayYear + ' · ' + metricLabel[metric];
+
+  if (metric === 'registered') {
+    // 합계: 주민등록 + 외국인 스택 bar
+    let rows = dp.districts.map((name, i) => ({
+      name, kr: dp.residents[i], fo: dp.foreigners[i], total: dp.registered[i]
+    }));
+    if (sort === 'desc') rows.sort((a, b) => b.total - a.total);
+
+    mkChart('c_district', {
+      type: 'bar',
+      data: {
+        labels: rows.map(r => r.name),
+        datasets: [
+          { label: '주민등록인구', data: rows.map(r => r.kr), backgroundColor: 'rgba(37,99,235,0.75)', stack: 's' },
+          { label: '등록외국인',   data: rows.map(r => r.fo), backgroundColor: 'rgba(239,68,68,0.75)',  stack: 's' },
+        ],
       },
-      scales: {
-        x: { stacked: false, ticks: { font: { size: 11 } } },
-        y: { stacked: false, ticks: { callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '인구 (명)' } },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 10, padding: 8 } },
+          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
+        },
+        scales: {
+          x: { stacked: true, ticks: { font: { size: 11 } } },
+          y: { stacked: true, ticks: { callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '인구 (명)' } },
+        },
       },
-    },
-  });
+    });
+
+  } else {
+    // 단일 지표 bar
+    const color = metric === 'residents' ? 'rgba(37,99,235,0.75)' : 'rgba(239,68,68,0.75)';
+    let rows = dp.districts.map((name, i) => ({ name, value: dp[metric][i] }));
+    if (sort === 'desc') rows.sort((a, b) => b.value - a.value);
+
+    mkChart('c_district', {
+      type: 'bar',
+      data: {
+        labels: rows.map(r => r.name),
+        datasets: [{ label: metricLabel[metric], data: rows.map(r => r.value), backgroundColor: color }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
+        },
+        scales: {
+          x: { ticks: { font: { size: 11 } } },
+          y: { ticks: { callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '인구 (명)' } },
+        },
+      },
+    });
+  }
 }
