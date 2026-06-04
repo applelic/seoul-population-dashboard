@@ -264,7 +264,29 @@ function renderDistrictChart() {
         responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 10, padding: 8 } },
-          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
+          tooltip: {
+  callbacks: {
+    title(items) {
+      const g = items[0].label;
+      return `${g} (${displayYear})`;
+    },
+    label(ctx) {
+      const g   = ctx.label;
+      const idx = distIdx[g];
+      const res = dp.residents[idx]  ?? 0;
+      const frn = dp.foreigners[idx] ?? 0;
+      const reg = dp.registered[idx] ?? (res + frn);
+      const pct = reg > 0 ? ((ctx.parsed.y / reg) * 100).toFixed(1) : '0.0';
+      return `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명 (${pct}%)`;
+    },
+    afterBody(items) {
+      const g   = items[0].label;
+      const idx = distIdx[g];
+      const reg = dp.registered[idx] ?? 0;
+      return ['──────────────────', `등록인구(합계): ${reg.toLocaleString()}명`];
+    },
+  },
+},
         },
         scales: {
           x: { stacked: true, ticks: { color: tickColorFn, font: { size: 11 }, maxRotation: 45, autoSkip: false } },
@@ -286,7 +308,34 @@ function renderDistrictChart() {
         responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
+          tooltip: {
+  callbacks: {
+    title(items) {
+      const g = items[0].label;
+      return `${g} (${displayYear})`;
+    },
+    label(ctx) {
+      const g   = ctx.label;
+      const idx = distIdx[g];
+      const val = dp[metric][idx] ?? 0;
+      const reg = dp.registered[idx] ?? 0;
+      const pct = reg > 0 ? ((val / reg) * 100).toFixed(1) : '0.0';
+      return `${metricLabel[metric]}: ${val.toLocaleString()}명 (${pct}%)`;
+    },
+    afterBody(items) {
+      const g   = items[0].label;
+      const idx = distIdx[g];
+      const res = dp.residents[idx]  ?? 0;
+      const frn = dp.foreigners[idx] ?? 0;
+      const reg = dp.registered[idx] ?? 0;
+      const lines = ['──────────────────'];
+      if (metric !== 'residents')  lines.push(`주민등록인구: ${res.toLocaleString()}명`);
+      if (metric !== 'foreigners') lines.push(`등록외국인:   ${frn.toLocaleString()}명`);
+      lines.push(`등록인구(합계): ${reg.toLocaleString()}명`);
+      return lines;
+    },
+  },
+},
         },
         scales: {
           x: { ticks: { color: tickColorFn, font: { size: 11 }, maxRotation: 45, autoSkip: false } },
