@@ -264,8 +264,29 @@ function renderDistrictChart() {
         responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 10, padding: 8 } },
-          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
-        },
+          tooltip: {
+  callbacks: {
+    title(items) {
+      const g = items[0].label;
+      return `${g} (${displayYear})`;
+    },
+    label(ctx) {
+      const g   = ctx.label;
+      const idx = distIdx[g];
+      const res = dp.residents[idx]  ?? 0;
+      const frn = dp.foreigners[idx] ?? 0;
+      const reg = dp.registered[idx] ?? (res + frn);
+      const pct = reg > 0 ? ((ctx.parsed.y / reg) * 100).toFixed(1) : '0.0';
+      return `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명 (${pct}%)`;
+    },
+    afterBody(items) {
+      const g   = items[0].label;
+      const idx = distIdx[g];
+      const reg = dp.registered[idx] ?? 0;
+      return ['──────────────────', `등록인구(합계): ${reg.toLocaleString()}명`];
+    },
+  },
+},
         scales: {
           x: { stacked: true, ticks: { color: tickColorFn, font: { size: 11 }, maxRotation: 45, autoSkip: false } },
           y: { stacked: true, ticks: { callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '인구 (명)' } },
