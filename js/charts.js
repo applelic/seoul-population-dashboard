@@ -264,8 +264,8 @@ function renderDistrictChart() {
         responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 10, padding: 8 } },
-          // 기존
-tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
+          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}명` } },
+        },
         scales: {
           x: { stacked: true, ticks: { color: tickColorFn, font: { size: 11 }, maxRotation: 45, autoSkip: false } },
           y: { stacked: true, ticks: { callback: v => (v / 10000).toFixed(0) + '만' }, title: { display: true, text: '인구 (명)' } },
