@@ -423,7 +423,7 @@ function renderDistrictAgeChart() {
           hidden: _AGE_HIDDEN[1]
         },
         {
-          label: '고령 (65세+)',
+          label: '고령 (65세 이상)',
           data: gus.map(g => d[g]?.[dataYr]?.elderly || 0),
           backgroundColor: 'rgba(216,90,48,0.85)',
           stack: 's',
@@ -454,6 +454,7 @@ function renderDistrictAgeChart() {
             footer: items => {
               const g  = gus[items[0].dataIndex];
               const dd = d[g]?.[dataYr];
+              const lines = ['──────────────────'];
               return dd ? `총인구: ${dd.total.toLocaleString()}명` : '';
             }
           }
