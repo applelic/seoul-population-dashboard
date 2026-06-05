@@ -522,7 +522,7 @@ function renderBirthMonthlyTrendChart() {
  const verticalTickPlugin = {
     id: 'verticalTick',
     afterDraw(chart) {
-      const { ctx, scales: { x } } = chart;
+      const { ctx, scales: { x }, chartArea } = chart;
       if (!x) return;
       ctx.save();
       ctx.font = '11px sans-serif';
@@ -531,9 +531,8 @@ function renderBirthMonthlyTrendChart() {
       x.ticks.forEach((tick, i) => {
         const xPos = x.getPixelForTick(i);
         const label = String(tick.label);
-        const charH = 13;
-        const totalH = label.length * charH;
-        let yPos = x.bottom + 6;
+        const charH = 12;
+        let yPos = chartArea.bottom + 18;
         for (const ch of label) {
           ctx.fillText(ch, xPos, yPos);
           yPos += charH;
