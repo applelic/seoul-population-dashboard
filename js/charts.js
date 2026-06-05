@@ -605,7 +605,8 @@ function initS2() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s2', d.kpi.s2);
   buildToggle('tg-birth-region', [{ label: '서울', value: 'seoul' }, { label: '전국', value: 'national' }], 'setBirthRegion');
-  drawBirthChart('seoul');
+drawBirthChart('seoul');
+  renderBirthMonthlyTrendChart();
   buildToggle('tg-birth', [{ label: '2024년', value: '2024' }, { label: '2025년', value: '2025' }, { label: '2026년', value: '2026' }], 'setBirthYear');
   buildMonthCombo('c_bmonth', 'lg-bmonth', 'note-bmonth', d.birthMonthly, '2024', '2023', C.navy, '#85B7EB');
   buildToggle('tg-marry', [{ label: '2024년', value: '2024' }, { label: '2025년', value: '2025' }, { label: '2026년', value: '2026' }], 'setMarryYear');
