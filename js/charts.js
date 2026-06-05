@@ -134,7 +134,7 @@ function initS1() {
   const d = DASHBOARD_DATA;
   buildKPI('kpi-s1', d.kpi.s1);
   setLegend('lg-pop', [
-    { color: C.navy + '99', label: '총인구(인구총조사)' },
+    { color: C.navy + '99', label: '총조사인구' },
     { color: C.blue + '99', label: '등록인구' },
     { color: C.red, label: '생활인구', dash: true },
   ]);
@@ -143,7 +143,7 @@ function initS1() {
     data: {
       labels: d.population.years,
       datasets: [
-        { type: 'bar',  label: '총인구',   data: d.population.total,      backgroundColor: C.navy + '55', yAxisID: 'y', order: 3 },
+        { type: 'bar',  label: '총조사인구',   data: d.population.total,      backgroundColor: C.navy + '55', yAxisID: 'y', order: 3 },
         { type: 'bar',  label: '등록인구', data: d.population.registered,  backgroundColor: C.blue + '88', yAxisID: 'y', order: 2 },
         { type: 'line', label: '생활인구', data: d.population.living,      borderColor: C.red, backgroundColor: 'transparent', pointRadius: 4, tension: 0.3, borderDash: [4, 3], yAxisID: 'y', order: 1 },
       ]
@@ -203,7 +203,7 @@ function renderDistrictChart() {
   if (!dp) return;
 
   const metricLabel = {
-    registered: '등록인구(합계)',
+    registered: '총등록인구',
     residents:  '주민등록인구',
     foreigners: '등록외국인',
   };
@@ -283,7 +283,7 @@ function renderDistrictChart() {
       const g   = items[0].label;
       const idx = distIdx[g];
       const reg = dp.registered[idx] ?? 0;
-      return ['──────────────────', `등록인구(합계): ${reg.toLocaleString()}명`];
+      return ['──────────────────', `총등록인구: ${reg.toLocaleString()}명`];
     },
   },
 },
@@ -409,21 +409,21 @@ function renderDistrictAgeChart() {
       labels: gus,
       datasets: [
         {
-          label: '유소년 (0~14세)',
+          label: '유소년인구(0~14세)',
           data: gus.map(g => d[g]?.[dataYr]?.youth   || 0),
           backgroundColor: 'rgba(55,138,221,0.85)',
           stack: 's',
           hidden: _AGE_HIDDEN[0]
         },
         {
-          label: '생산연령 (15~64세)',
+          label: '생산연령인구(15~64세)',
           data: gus.map(g => d[g]?.[dataYr]?.working || 0),
           backgroundColor: 'rgba(29,158,117,0.85)',
           stack: 's',
           hidden: _AGE_HIDDEN[1]
         },
         {
-          label: '고령 (65세 이상)',
+          label: '고령인구(65세 이상)',
           data: gus.map(g => d[g]?.[dataYr]?.elderly || 0),
           backgroundColor: 'rgba(216,90,48,0.85)',
           stack: 's',
@@ -447,7 +447,7 @@ function renderDistrictAgeChart() {
               const dd = d[g]?.[dataYr];
               if (!dd) return '';
               const keys  = ['youth', 'working', 'elderly'];
-              const names = ['유소년', '생산연령', '고령'];
+              const names = ['유소년인구', '생산연령인구', '고령인구'];
               const k = keys[ctx.datasetIndex];
               return `${names[ctx.datasetIndex]}: ${dd[k].toLocaleString()}명 (${_pct(dd[k], dd.total)}%)`;
             },
@@ -455,7 +455,7 @@ function renderDistrictAgeChart() {
               const g  = gus[items[0].dataIndex];
               const dd = d[g]?.[dataYr];
               const lines = ['──────────────────'];
-              return dd ? `총인구: ${dd.total.toLocaleString()}명` : '';
+              lines.return dd ? `총등록인구: ${dd.total.toLocaleString()}명` : '';
             }
           }
         }
