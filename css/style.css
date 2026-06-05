@@ -120,7 +120,7 @@ body {
 .chart-wrap.h260 { height: 260px; }
 .chart-wrap.h280 { height: 280px; }
 .chart-wrap.h300 { height: 300px; }
-.chart-wrap.h360 { height: 360px; }
+.chart-wrap.h400 { height: 400px; }
 /* 범례 */
 .legend {
   display: flex;
