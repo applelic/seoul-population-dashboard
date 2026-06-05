@@ -519,6 +519,30 @@ function renderBirthMonthlyTrendChart() {
     }).join('');
   }
 
+ const verticalTickPlugin = {
+    id: 'verticalTick',
+    afterDraw(chart) {
+      const { ctx, scales: { x } } = chart;
+      if (!x) return;
+      ctx.save();
+      ctx.font = '11px sans-serif';
+      ctx.fillStyle = tc;
+      ctx.textAlign = 'center';
+      x.ticks.forEach((tick, i) => {
+        const xPos = x.getPixelForTick(i);
+        const label = String(tick.label);
+        const charH = 13;
+        const totalH = label.length * charH;
+        let yPos = x.bottom + 6;
+        for (const ch of label) {
+          ctx.fillText(ch, xPos, yPos);
+          yPos += charH;
+        }
+      });
+      ctx.restore();
+    }
+  };
+
   mkChart('c_birth_monthly_trend', {
     type: 'bar',
     data: {
@@ -547,7 +571,8 @@ function renderBirthMonthlyTrendChart() {
         x: {
           stacked: true,
           grid: { color: gc },
-          ticks: { color: tc, font: { size: 11 }, maxRotation: 0 },
+          ticks: { color: 'transparent', font: { size: 11 }, maxRotation: 0, minRotation: 0, autoSkip: false },
+          afterFit(scale) { scale.paddingBottom = 46; },
         },
         y: {
           stacked: true,
