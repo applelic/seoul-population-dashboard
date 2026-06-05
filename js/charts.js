@@ -571,7 +571,7 @@ function renderBirthMonthlyTrendChart() {
           stacked: true,
           grid: { color: gc },
           ticks: { color: 'transparent', font: { size: 11 }, maxRotation: 0, minRotation: 0, autoSkip: false },
-          afterFit(scale) { scale.paddingBottom = 64; },
+          afterFit(scale) { scale.paddingBottom = 70; },
         },
         y: {
           stacked: true,
