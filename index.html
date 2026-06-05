@@ -35,16 +35,16 @@
           <div class="chart-title">서울시 인구 추이 (만명)</div>
           <div class="legend" id="lg-pop"></div>
           <div class="chart-wrap h240"><canvas id="c_pop"></canvas></div>
-          <div class="chart-note">자료: 인구총조사(국가데이터처)·주민등록인구(행안부)·생활인구(서울시) · * 총인구·등록인구는 내외국인 합산</div>
+          <div class="chart-note">자료: 인구총조사(국가데이터처)·주민등록인구(행안부)·생활인구(서울시) · *내외국인 합산</div>
         </div>
         <div class="chart-row">
           <div class="chart-card">
-            <div class="chart-title">연령별 인구 구성 변화 (%)</div>
+            <div class="chart-title">연령별 인구 변화 (%)</div>
             <div class="legend" id="lg-age"></div>
             <div class="chart-wrap h220"><canvas id="c_age"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-title">20대 성비 추이 (여100명당 남)</div>
+            <div class="chart-title">20대 성비 추이(여100명당 남)</div>
             <div class="legend" id="lg-sex"></div>
             <div class="chart-wrap h220"><canvas id="c_sex"></canvas></div>
           </div>
@@ -81,7 +81,7 @@
             </select>
             <label for="districtSort" style="font-size:13px;color:#555;margin-left:12px;">정렬:</label>
             <select id="districtSort" style="margin-left:6px;font-size:13px;padding:2px 6px;border:1px solid #ddd;border-radius:4px">
-              <option value="region">생활권순</option>
+              <option value="region">생활권 순</option>
               <option value="desc">많은 순</option>
               <option value="name">자치구 순</option>
             </select>
@@ -128,7 +128,7 @@
             <select id="districtAgeSort" style="font-size:13px;padding:2px 6px;border:1px solid #ddd;border-radius:4px;">
               <option value="region">권역순</option>
               <option value="elderly">고령인구 많은 순</option>
-              <option value="total">총인구 많은 순</option>
+              <option value="total">등록인구 많은 순</option>
               <option value="alpha">가나다순</option>
             </select>
             <label for="districtAgeRegion" style="font-size:13px;color:#555;margin-left:6px;">권역 필터</label>
