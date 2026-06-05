@@ -464,12 +464,7 @@ function renderDistrictAgeChart() {
         x: {
           stacked: true,
           grid: { color: gc },
-          ticks: {
-            color: ctx => _REGION_COLORS[_REGION_MAP[gus[ctx.index]]] || tc,
-            font: { size: 11 },
-            autoSkip: false,
-            maxRotation: 45
-          }
+          ticks: { color: tc, font: { size: 11 }, maxRotation: 90, minRotation: 90, autoSkip: false },
         },
         y: {
           stacked: true,
