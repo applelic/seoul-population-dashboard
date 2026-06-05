@@ -505,9 +505,18 @@ function renderBirthMonthlyTrendChart() {
   if (!ctx) return;
 
   const MONTH_COLORS = [
-    '#1f4e79','#c55a11','#7f7f7f','#ffc000',
-    '#4472c4','#ed7d31','#70ad47','#a9d18e',
-    '#264478','#9e480e','#636363','#997300',
+    '#2563A8', // 1월 파랑
+    '#D94F1E', // 2월 빨강-주황
+    '#4FA832', // 3월 초록
+    '#9B3DC8', // 4월 보라
+    '#E8A020', // 5월 황금
+    '#1A8FA0', // 6월 청록
+    '#C8363E', // 7월 빨강
+    '#6EA832', // 8월 연두
+    '#7040B8', // 9월 남보라
+    '#E06A10', // 10월 주황
+    '#1E6BB5', // 11월 하늘파랑
+    '#3DAA60', // 12월 녹색
   ];
 
   const d = DASHBOARD_DATA.birthMonthlyTrend;
