@@ -455,7 +455,7 @@ function renderDistrictAgeChart() {
               const g  = gus[items[0].dataIndex];
               const dd = d[g]?.[dataYr];
               const lines = ['──────────────────'];
-              lines.return dd ? `총등록인구: ${dd.total.toLocaleString()}명` : '';
+              return dd ? `총등록인구: ${dd.total.toLocaleString()}명` : '';
             }
           }
         }
