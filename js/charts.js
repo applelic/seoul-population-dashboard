@@ -499,6 +499,75 @@ function _toggleDistrictAgeLeg(idx) {
 // ══════════════════════════════════════════════
 // S2: 출생·혼인 동향
 // ══════════════════════════════════════════════
+
+function renderBirthMonthlyTrendChart() {
+  const ctx = document.getElementById('c_birth_monthly_trend');
+  if (!ctx) return;
+
+  const MONTH_COLORS = [
+    '#1f4e79','#c55a11','#7f7f7f','#ffc000',
+    '#4472c4','#ed7d31','#70ad47','#a9d18e',
+    '#264478','#9e480e','#636363','#997300',
+  ];
+
+  const d = DASHBOARD_DATA.birthMonthlyTrend;
+
+  // 범례: 12월→1월 순으로 위에서 아래 (스택과 동일한 시각적 순서)
+  const lgEl = document.getElementById('lg-birth-monthly-trend');
+  if (lgEl) {
+    lgEl.innerHTML = [...d.datasets].reverse().map((ds, i) => {
+      const color = MONTH_COLORS[11 - i];
+      return '<span style="display:flex;align-items:center;gap:4px;white-space:nowrap;">' +
+        '<span style="width:10px;height:10px;border-radius:2px;background:' + color + ';flex-shrink:0;"></span>' +
+        ds.label + '</span>';
+    }).join('');
+  }
+
+  mkChart('c_birth_monthly_trend', {
+    type: 'bar',
+    data: {
+      labels: d.labels,
+      datasets: d.datasets.map((ds, i) => ({
+        label: ds.label,
+        data:  ds.data,
+        backgroundColor: MONTH_COLORS[i],
+        stack: 'birth',
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title:  items => items[0].label + '년',
+            label:  item  => ' ' + item.dataset.label + ': ' + (item.parsed.y != null ? item.parsed.y.toLocaleString() : '–') + '명',
+            footer: items => '합계: ' + items.reduce((s, i) => s + (i.parsed.y || 0), 0).toLocaleString() + '명',
+          },
+        },
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { color: gc },
+          ticks: { color: tc, font: { size: 11 }, maxRotation: 0 },
+        },
+        y: {
+          stacked: true,
+          grid: { color: gc },
+          ticks: {
+            color: tc,
+            font: { size: 11 },
+            callback: v => v >= 10000 ? Math.round(v / 10000) + '만' : v.toLocaleString(),
+          },
+          title: { display: true, text: '출생아 수 (명)', color: tc, font: { size: 11 } },
+        },
+      },
+    },
+  });
+}
+
 let birthRegion = 'seoul';
 function drawBirthChart(region) {
   birthRegion = region;
