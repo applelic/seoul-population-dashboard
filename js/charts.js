@@ -524,15 +524,26 @@ function renderBirthMonthlyTrendChart() {
     afterDraw(chart) {
       const { ctx, scales: { x }, chartArea } = chart;
       if (!x) return;
+      const labelColor = D ? '#aaa' : '#777';
       ctx.save();
       ctx.font = '11px sans-serif';
-      ctx.fillStyle = tc;
+      ctx.fillStyle = labelColor;
       ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      // 캔버스 전체 클립 해제
+      ctx.restore();
+      ctx.save();
+      ctx.rect(0, 0, chart.canvas.width, chart.canvas.height);
+      ctx.clip();
+      ctx.font = '11px sans-serif';
+      ctx.fillStyle = labelColor;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
       x.ticks.forEach((tick, i) => {
         const xPos = x.getPixelForTick(i);
         const label = String(tick.label);
-        const charH = 12;
-        let yPos = chartArea.bottom + 18;
+        const charH = 13;
+        let yPos = chartArea.bottom + 4;
         for (const ch of label) {
           ctx.fillText(ch, xPos, yPos);
           yPos += charH;
@@ -544,6 +555,7 @@ function renderBirthMonthlyTrendChart() {
 
   mkChart('c_birth_monthly_trend', {
     type: 'bar',
+    plugins: [verticalTickPlugin],
     data: {
       labels: d.labels,
       datasets: d.datasets.map((ds, i) => ({
@@ -556,6 +568,7 @@ function renderBirthMonthlyTrendChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { bottom: 58 } },
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -571,7 +584,6 @@ function renderBirthMonthlyTrendChart() {
           stacked: true,
           grid: { color: gc },
           ticks: { color: 'transparent', font: { size: 11 }, maxRotation: 0, minRotation: 0, autoSkip: false },
-          afterFit(scale) { scale.paddingBottom = 70; },
         },
         y: {
           stacked: true,
