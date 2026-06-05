@@ -464,7 +464,7 @@ function renderDistrictAgeChart() {
         x: {
           stacked: true,
           grid: { color: gc },
-          ticks: { color: tc, font: { size: 11 }, maxRotation: 90, minRotation: 90, autoSkip: false },
+          ticks: { color: tc, font: { size: 11 }, maxRotation: 45, minRotation: 45, autoSkip: false },
         },
         y: {
           stacked: true,
